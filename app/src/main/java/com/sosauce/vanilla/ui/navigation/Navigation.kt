@@ -37,6 +37,7 @@ import com.sosauce.vanilla.ui.screens.settings.SettingsScreen
 import com.sosauce.vanilla.utils.CalculatorViewModelFactory
 import com.sosauce.vanilla.utils.HistoryViewModelFactory
 import com.sosauce.vanilla.utils.bouncySpec
+import com.sosauce.vanilla.utils.navigationBouncySpec
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -65,7 +66,7 @@ fun Nav() {
 
     AnimatedContent(
         targetState = screenToDisplay,
-        transitionSpec = { slideInHorizontally(bouncySpec()) { -it } + fadeIn() togetherWith fadeOut() },
+        transitionSpec = { slideInHorizontally(navigationBouncySpec) { -it } + fadeIn() togetherWith fadeOut() },
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) { screen ->
         when (screen) {

@@ -39,17 +39,15 @@ import com.sosauce.vanilla.ui.screens.settings.components.SettingsSwitch
 import com.sosauce.vanilla.ui.screens.settings.components.SettingsWithTitle
 import com.sosauce.vanilla.ui.screens.settings.components.ThemeItem
 import com.sosauce.vanilla.ui.screens.settings.components.ThemeSelector
-import com.sosauce.vanilla.ui.shared_components.CuteNavigationButton
+import com.sosauce.vanilla.ui.shared_components.AnimatedFab
+import com.sosauce.vanilla.ui.theme.nunitoFontFamily
 import com.sosauce.vanilla.utils.CuteTheme
 import com.sosauce.vanilla.utils.anyDarkColorScheme
 import com.sosauce.vanilla.utils.anyLightColorScheme
 import com.sosauce.vanilla.utils.selfAlignHorizontally
 
 @Composable
-fun SettingsLookAndFeel(
-    onNavigateUp: () -> Unit,
-) {
-    val scrollState = rememberScrollState()
+fun SettingsLookAndFeel() {
     var theme by rememberAppTheme()
     var useSystemFont by rememberUseSystemFont()
     var useButtonsAnimation by rememberUseButtonsAnimation()
@@ -104,7 +102,7 @@ fun SettingsLookAndFeel(
             text = {
                 Text(
                     text = "Tt",
-                    fontWeight = FontWeight.ExtraBold
+                    fontFamily = nunitoFontFamily
                 )
             },
         ),
@@ -115,115 +113,97 @@ fun SettingsLookAndFeel(
             text = {
                 Text(
                     text = "Tt",
-                    fontFamily = FontFamily.Default,
-                    fontWeight = FontWeight.ExtraBold
+                    fontFamily = FontFamily.Default
                 )
             }
         )
     )
-
-    Scaffold(
-        bottomBar = {
-            CuteNavigationButton(
-                modifier = Modifier
-                    .padding(start = 15.dp)
-                    .navigationBarsPadding()
-                    .selfAlignHorizontally(Alignment.Start),
-                onNavigateUp = onNavigateUp
-            )
-        }
-    ) { pv ->
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(pv)
+    Column {
+        SettingsWithTitle(
+            title = R.string.theme
         ) {
-            SettingsWithTitle(
-                title = R.string.theme
+            Card(
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 2.dp)
             ) {
-                Card(
-                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 2.dp)
-                ) {
-                    LazyRowWithScrollButton(
-                        items = themeItems
-                    ) { item ->
-                        ThemeSelector(
-                            onClick = item.onClick,
-                            backgroundColor = item.backgroundColor,
-                            text = item.text,
-                            isThemeSelected = item.isSelected,
-                            icon = {
-                                Icon(
-                                    painter = item.iconAndTint.first,
-                                    contentDescription = null,
-                                    tint = item.iconAndTint.second,
-                                )
-                            }
-                        )
-                    }
+                LazyRowWithScrollButton(
+                    items = themeItems
+                ) { item ->
+                    ThemeSelector(
+                        onClick = item.onClick,
+                        backgroundColor = item.backgroundColor,
+                        text = item.text,
+                        isThemeSelected = item.isSelected,
+                        icon = {
+                            Icon(
+                                painter = item.iconAndTint.first,
+                                contentDescription = null,
+                                tint = item.iconAndTint.second,
+                            )
+                        }
+                    )
                 }
             }
-            SettingsWithTitle(
-                title = R.string.font
+        }
+        SettingsWithTitle(
+            title = R.string.font
+        ) {
+            Card(
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 2.dp)
             ) {
-                Card(
-                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceContainer),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 2.dp)
-                ) {
-                    LazyRowWithScrollButton(
-                        items = fontItems
-                    ) { item ->
-                        FontSelector(
-                            item
-                        )
-                    }
+                LazyRowWithScrollButton(
+                    items = fontItems
+                ) { item ->
+                    FontSelector(
+                        item
+                    )
                 }
             }
-            SettingsWithTitle(
-                title = R.string.ui
-            ) {
-                SettingsSwitch(
-                    checked = useButtonsAnimation,
-                    onCheckedChange = { useButtonsAnimation = !useButtonsAnimation },
-                    topDp = 24.dp,
-                    bottomDp = 4.dp,
-                    text = R.string.buttons_anim
-                )
-                SettingsSwitch(
-                    checked = coloredOperators,
-                    onCheckedChange = { coloredOperators = !coloredOperators },
-                    topDp = 4.dp,
-                    bottomDp = 4.dp,
-                    text = R.string.colored_operatos
-                )
-                SettingsSwitch(
-                    checked = swapZeroAndDecimal,
-                    onCheckedChange = { swapZeroAndDecimal = !swapZeroAndDecimal },
-                    topDp = 4.dp,
-                    bottomDp = 4.dp,
-                    text = R.string.swap_zero_and_decimal
-                )
-                SettingsSwitch(
-                    checked = useHapticFeedback,
-                    onCheckedChange = { useHapticFeedback = !useHapticFeedback },
-                    topDp = 4.dp,
-                    bottomDp = 4.dp,
-                    text = R.string.haptic_feedback
-                )
-                SettingsSwitch(
-                    checked = showClearButton,
-                    onCheckedChange = { showClearButton = !showClearButton },
-                    topDp = 4.dp,
-                    bottomDp = 24.dp,
-                    text = R.string.show_clear_button,
-                    optionalDescription = R.string.clear_button_desc
-                )
-            }
+        }
+        SettingsWithTitle(
+            title = R.string.ui
+        ) {
+            SettingsSwitch(
+                checked = useButtonsAnimation,
+                onCheckedChange = { useButtonsAnimation = !useButtonsAnimation },
+                topDp = 24.dp,
+                bottomDp = 4.dp,
+                text = R.string.buttons_anim
+            )
+            SettingsSwitch(
+                checked = coloredOperators,
+                onCheckedChange = { coloredOperators = !coloredOperators },
+                topDp = 4.dp,
+                bottomDp = 4.dp,
+                text = R.string.colored_operatos
+            )
+            SettingsSwitch(
+                checked = swapZeroAndDecimal,
+                onCheckedChange = { swapZeroAndDecimal = !swapZeroAndDecimal },
+                topDp = 4.dp,
+                bottomDp = 4.dp,
+                text = R.string.swap_zero_and_decimal
+            )
+            SettingsSwitch(
+                checked = useHapticFeedback,
+                onCheckedChange = { useHapticFeedback = !useHapticFeedback },
+                topDp = 4.dp,
+                bottomDp = 4.dp,
+                text = R.string.haptic_feedback
+            )
+            SettingsSwitch(
+                checked = showClearButton,
+                onCheckedChange = { showClearButton = !showClearButton },
+                topDp = 4.dp,
+                bottomDp = 24.dp,
+                text = R.string.show_clear_button,
+                optionalDescription = R.string.clear_button_desc
+            )
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -28,13 +31,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEachIndexed
 import com.sosauce.vanilla.R
 import com.sosauce.vanilla.ui.navigation.Screens
 import com.sosauce.vanilla.ui.navigation.SettingsScreen
 import com.sosauce.vanilla.ui.screens.settings.components.AboutCard
 import com.sosauce.vanilla.ui.screens.settings.components.SettingsCategoryCard
-import com.sosauce.vanilla.ui.shared_components.CuteNavigationButton
+import com.sosauce.vanilla.ui.shared_components.AnimatedFab
 import com.sosauce.vanilla.utils.bouncySpec
+import com.sosauce.vanilla.utils.navigationBouncySpec
 import com.sosauce.vanilla.utils.selfAlignHorizontally
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -56,41 +61,44 @@ fun SettingsScreen(
         }
     }
 
-    AnimatedContent(
-        targetState = screenToDisplay,
-        modifier = Modifier.background(MaterialTheme.colorScheme.background),
-        transitionSpec = { slideInHorizontally(bouncySpec()) { -it } + fadeIn() togetherWith fadeOut() }
-    ) { screen ->
-        when (screen) {
-            SettingsScreen.SETTINGS -> {
-                SettingsPage(
-                    onNavigate = onNavigate,
-                    onNavigateSettings = { screenToDisplay = it }
-                )
-            }
+    Scaffold(
+        bottomBar = {
+            AnimatedFab(
+                onClick = {
+                    if (screenToDisplay == SettingsScreen.SETTINGS) {
+                        onNavigate(Screens.MAIN)
+                    } else {
+                        screenToDisplay = SettingsScreen.SETTINGS
+                    }
+                },
+                modifier = Modifier
+                    .padding(start = 15.dp)
+                    .navigationBarsPadding()
+                    .selfAlignHorizontally(Alignment.Start),
+                icon = R.drawable.back_arrow,
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
+            )
+        }
+    ) { paddingValues ->
+        AnimatedContent(
+            targetState = screenToDisplay,
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background),
+            transitionSpec = { slideInHorizontally(navigationBouncySpec) { -it } + fadeIn() togetherWith fadeOut() }
+        ) { screen ->
+            when (screen) {
+                SettingsScreen.SETTINGS -> {
+                    SettingsPage(
+                        onNavigateSettings = { screenToDisplay = it }
+                    )
+                }
 
-            SettingsScreen.LOOK_AND_FEEL -> {
-                SettingsLookAndFeel(
-                    onNavigateUp = { screenToDisplay = SettingsScreen.SETTINGS }
-                )
-            }
-
-            SettingsScreen.HISTORY -> {
-                SettingsHistory(
-                    onNavigateUp = { screenToDisplay = SettingsScreen.SETTINGS }
-                )
-            }
-
-            SettingsScreen.FORMATTING -> {
-                SettingsFormatting(
-                    onNavigateUp = { screenToDisplay = SettingsScreen.SETTINGS }
-                )
-            }
-
-            SettingsScreen.MISC -> {
-                SettingsMisc(
-                    onNavigateUp = { screenToDisplay = SettingsScreen.SETTINGS }
-                )
+                SettingsScreen.LOOK_AND_FEEL -> { SettingsLookAndFeel() }
+                SettingsScreen.HISTORY -> { SettingsHistory() }
+                SettingsScreen.FORMATTING -> { SettingsFormatting() }
+                SettingsScreen.MISC -> { SettingsMisc() }
             }
         }
     }
@@ -98,11 +106,9 @@ fun SettingsScreen(
 
 @Composable
 private fun SettingsPage(
-    onNavigate: (Screens) -> Unit,
     onNavigateSettings: (SettingsScreen) -> Unit
 ) {
-    val listState = rememberLazyListState()
-    val settingsCategories = arrayOf(
+    val settingsCategories = listOf(
         SettingsCategory(
             name = R.string.look_and_feel,
             description = R.string.look_and_feel_desc,
@@ -129,42 +135,21 @@ private fun SettingsPage(
         )
     )
 
-    Scaffold(
-        bottomBar = {
-            CuteNavigationButton(
-                modifier = Modifier
-                    .padding(start = 15.dp)
-                    .navigationBarsPadding()
-                    .selfAlignHorizontally(Alignment.Start),
-                onNavigateUp = { onNavigate(Screens.MAIN) }
+    Column {
+        AboutCard()
+        Spacer(Modifier.height(20.dp))
+        settingsCategories.fastForEachIndexed { index, category ->
+            SettingsCategoryCard(
+                icon = category.icon,
+                name = category.name,
+                description = category.description,
+                topDp = if (index == 0) 24.dp else 4.dp,
+                bottomDp = if (index == settingsCategories.lastIndex) 24.dp else 4.dp,
+                onNavigate = category.onNavigate
             )
         }
-    ) { pv ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = pv,
-            state = listState
-        ) {
-            item {
-                AboutCard()
-                Spacer(Modifier.height(20.dp))
-            }
-            itemsIndexed(
-                items = settingsCategories,
-                key = { _, category -> category.id }
-            ) { index, category ->
-                SettingsCategoryCard(
-                    icon = category.icon,
-                    name = category.name,
-                    description = category.description,
-                    topDp = if (index == 0) 24.dp else 4.dp,
-                    bottomDp = if (index == settingsCategories.lastIndex) 24.dp else 4.dp,
-                    onNavigate = category.onNavigate
-                )
-            }
-        }
     }
+
 }
 
 @Immutable

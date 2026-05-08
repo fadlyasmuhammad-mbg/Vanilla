@@ -1,3 +1,4 @@
+import com.android.build.api.variant.VariantOutputConfiguration
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -7,6 +8,20 @@ plugins {
 }
 
 
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        val mainOutput = variant.outputs.single { it.outputType == VariantOutputConfiguration.OutputType.SINGLE }
+
+        @Suppress("UnstableApiUsage")
+        mainOutput.outputFileName = "Vanilla_${mainOutput.versionName.get()}.apk"
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+    }
+}
 
 android {
     namespace = "com.sosauce.vanilla"
@@ -17,23 +32,13 @@ android {
         applicationId = "com.sosauce.cutecalc"
         minSdk = 23
         targetSdk = 37
-        versionCode = 50001
-        versionName = "4.0.1"
+        versionCode = 50002
+        versionName = "4.0.2"
         ndk {
             //noinspection ChromeOsAbiSupport
             abiFilters += arrayOf("arm64-v8a", "armeabi-v7a")
         }
 
-    }
-
-    applicationVariants.all {
-        val variant = this
-        variant.outputs
-            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
-            .forEach { output ->
-                val outputFileName = "Vanilla_${variant.versionName}.apk"
-                output.outputFileName = outputFileName
-            }
     }
 
     buildTypes {
@@ -50,12 +55,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_17
-        }
     }
 
     buildFeatures {

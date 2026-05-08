@@ -1,17 +1,17 @@
 [versions]
-agp = "9.1.1"
-composeBom = "2026.03.01"
+agp = "9.2.1"
+composeBom = "2026.05.00"
 coreSplashscreen = "1.2.0"
 datastorePreferences = "1.2.1"
 keval = "1.1.1"
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 ksp = "2.3.4"
 lifecycleViewmodelCompose = "2.10.0"
 roomCompiler = "2.8.4"
 roomKtx = "2.8.4"
 activityCompose = "1.13.0"
-material3 = "1.5.0-alpha17"
-squircleShape = "5.2.0"
+material3 = "1.5.0-alpha19"
+squircleShape = "5.2.1"
 
 
 [libraries]

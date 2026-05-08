@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,44 +17,25 @@ import com.sosauce.vanilla.R
 import com.sosauce.vanilla.data.datastore.rememberShowOnLockScreen
 import com.sosauce.vanilla.ui.screens.settings.components.SettingsSwitch
 import com.sosauce.vanilla.ui.screens.settings.components.SettingsWithTitle
-import com.sosauce.vanilla.ui.shared_components.CuteNavigationButton
+import com.sosauce.vanilla.ui.shared_components.AnimatedFab
 import com.sosauce.vanilla.utils.selfAlignHorizontally
 
 @Composable
-fun SettingsMisc(
-    onNavigateUp: () -> Unit
-) {
-    val scrollState = rememberScrollState()
+fun SettingsMisc() {
     var showOnLockScreen by rememberShowOnLockScreen()
 
-    Scaffold(
-        bottomBar = {
-            CuteNavigationButton(
-                modifier = Modifier
-                    .padding(start = 15.dp)
-                    .navigationBarsPadding()
-                    .selfAlignHorizontally(Alignment.Start),
-                onNavigateUp = onNavigateUp
-            )
-        }
-    ) { pv ->
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(pv)
+    Column {
+        SettingsWithTitle(
+            title = R.string.misc
         ) {
-            SettingsWithTitle(
-                title = R.string.misc
-            ) {
-                SettingsSwitch(
-                    checked = showOnLockScreen,
-                    onCheckedChange = { showOnLockScreen = !showOnLockScreen },
-                    topDp = 24.dp,
-                    bottomDp = 24.dp,
-                    text = R.string.show_ls,
-                    optionalDescription = R.string.show_ls_desc
-                )
-            }
+            SettingsSwitch(
+                checked = showOnLockScreen,
+                onCheckedChange = { showOnLockScreen = !showOnLockScreen },
+                topDp = 24.dp,
+                bottomDp = 24.dp,
+                text = R.string.show_ls,
+                optionalDescription = R.string.show_ls_desc
+            )
         }
     }
 }

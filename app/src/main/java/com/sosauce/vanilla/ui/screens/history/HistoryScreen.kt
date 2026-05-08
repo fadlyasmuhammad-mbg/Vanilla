@@ -61,7 +61,7 @@ import com.sosauce.vanilla.domain.model.Calculation
 import com.sosauce.vanilla.domain.repository.HistoryEvents
 import com.sosauce.vanilla.ui.screens.history.components.DeletionConfirmationDialog
 import com.sosauce.vanilla.ui.screens.history.components.HistoryActionButtons
-import com.sosauce.vanilla.ui.shared_components.CuteNavigationButton
+import com.sosauce.vanilla.ui.shared_components.AnimatedFab
 import com.sosauce.vanilla.utils.formatExpression
 import com.sosauce.vanilla.utils.formatNumber
 import com.sosauce.vanilla.utils.isErrorMessage
@@ -96,9 +96,10 @@ fun HistoryScreen(
                     .navigationBarsPadding(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                CuteNavigationButton(
+                AnimatedFab(
+                    onClick = onGotoMain,
                     icon = R.drawable.arrow_up,
-                    onNavigateUp = onGotoMain
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer
                 )
                 HistoryActionButtons { showDeleteConfirmation = true }
             }

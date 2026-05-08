@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.IntOffset
 import com.sosauce.vanilla.data.calculator.Tokens
 import com.sosauce.vanilla.domain.model.Calculation
 import java.text.DecimalFormatSymbols
@@ -211,6 +212,8 @@ fun <T> bouncySpec() = spring<T>(
     dampingRatio = Spring.DampingRatioMediumBouncy,
     stiffness = Spring.StiffnessLow
 )
+val navigationBouncySpec = spring<IntOffset>(Spring.DampingRatioLowBouncy, Spring.StiffnessLow)
+
 
 val Context.appVersion
     get() = packageManager.getPackageInfo(packageName, 0).versionName
