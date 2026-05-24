@@ -1,42 +1,22 @@
 package com.sosauce.vanilla.data.calculator
 
+import com.notkamui.keval.BigDecimal
 import com.notkamui.keval.Keval
 import com.notkamui.keval.KevalInvalidArgumentException
 import com.notkamui.keval.KevalInvalidExpressionException
-import com.notkamui.keval.KevalZeroDivisionException
+import com.notkamui.keval.KevalNumbers
+import java.math.BigDecimal
+import java.math.MathContext
 import java.math.RoundingMode
-import kotlin.math.floor
-import kotlin.math.pow
+import kotlin.math.PI
 import kotlin.math.sqrt
 
 class NegativeSquareRootException : RuntimeException("Be for real 3:<")
 class ValueTooLargeException : RuntimeException("Value too large")
 object Evaluator {
 
-    private val KEVAL = Keval.create {
-        binaryOperator {
-            symbol = Tokens.ADD
-            precedence = 2
-            isLeftAssociative = true
-            implementation = { a, b -> a + b }
-        }
-        unaryOperator {
-            symbol = Tokens.ADD
-            isPrefix = true
-            implementation = { it }
-        }
-        binaryOperator {
-            symbol = Tokens.SUBTRACT
-            precedence = 2
-            isLeftAssociative = true
-            implementation = { a, b -> a - b }
-        }
-        unaryOperator {
-            symbol = Tokens.SUBTRACT
-            isPrefix = true
-            implementation = { -it }
-        }
-
+    private val KEVAL = Keval.create(KevalNumbers.BigDecimal) {
+        includeDefault()
         binaryOperator {
             symbol = Tokens.MULTIPLY
             precedence = 3
@@ -44,49 +24,34 @@ object Evaluator {
             implementation = { a, b -> a * b }
         }
 
-        binaryOperator {
-            symbol = Tokens.DIVIDE
-            precedence = 3
-            isLeftAssociative = true
-            implementation = { a, b ->
-                if (b == 0.0) throw KevalZeroDivisionException()
-                a / b
-            }
-        }
-
-        binaryOperator {
-            symbol = Tokens.POWER
-            precedence = 4
-            isLeftAssociative = false
-            implementation = { a, b -> a.pow(b) }
-        }
-
         unaryOperator {
             symbol = Tokens.FACTORIAL
             isPrefix = false
             implementation = {
-                if (it < 0) throw KevalInvalidArgumentException("Factorial of a negative number")
-                if (floor(it) != it) throw KevalInvalidArgumentException("Factorial of a non-integer")
-                (1..it.toInt()).fold(1.0) { acc, i -> acc * i }
+                if (it < BigDecimal.ZERO) throw KevalInvalidArgumentException("Factorial of a negative number")
+                if (!it.isWholeNumber()) throw KevalInvalidArgumentException("Factorial of a non-integer")
+                fac(it, it)
             }
         }
 
         unaryOperator {
             symbol = Tokens.SQUARE_ROOT
             isPrefix = true
-            implementation =
-                { arg -> if (arg < 0) throw NegativeSquareRootException() else sqrt(arg) }
+            implementation = { arg ->
+                if (arg < BigDecimal.ZERO) throw NegativeSquareRootException()
+                arg.betterSqrt(32)
+            }
         }
 
         unaryOperator {
             symbol = Tokens.MODULO
             isPrefix = false
-            implementation = { arg -> arg / 100 }
+            implementation = { arg -> arg.divide(100.toBigDecimal()) }
         }
 
         constant {
             name = "PI"
-            value = Math.PI
+            value = PI.toBigDecimal()
         }
 
     }
@@ -95,25 +60,14 @@ object Evaluator {
 
 
     @JvmStatic
-    fun eval(
-        formula: String,
-        precision: Int
-    ): String = try {
+    fun eval(formula: String, precision: Int): String = try {
         val result = KEVAL
             .eval(formula.replace(Tokens.PI.toString(), "PI").handleRelativePercentage())
-
-        val formattedResult = if (result > Double.MAX_VALUE) {
-            throw ValueTooLargeException()
-        } else {
-            result
-                .toBigDecimal()
-                .setScale(precision, RoundingMode.HALF_UP)
-                .stripTrailingZeros()
-                .toPlainString()
-        }
-        prevResult = formattedResult
-        formattedResult
-    } catch (e: KevalInvalidExpressionException) {
+            .setScale(precision, RoundingMode.HALF_EVEN)
+            .stripTrailingZeros().toPlainString()
+        prevResult = result
+        result
+    } catch (_: KevalInvalidExpressionException) {
         prevResult
     } catch (e: Exception) {
         e.message ?: "Undetermined error"
@@ -123,11 +77,7 @@ object Evaluator {
     @JvmStatic
     private fun evalParenthesis(formula: String): String {
         val result = KEVAL.eval(formula)
-        return if (result > Double.MAX_VALUE) {
-            throw ValueTooLargeException()
-        } else {
-            result.toBigDecimal().stripTrailingZeros().toPlainString()
-        }
+        return result.stripTrailingZeros().toPlainString()
     }
 
     private fun String.handleRelativePercentage(): String {
@@ -164,4 +114,37 @@ object Evaluator {
     private val relativePercentageRegex = Regex("""(\d+(?:\.\d+)?)\s*([+\-*])\s*(\d+(?:\.\d+)?)%""")
 
 
+}
+
+
+private fun fac(n: BigDecimal, acc: BigDecimal): BigDecimal {
+    return if (n == BigDecimal.ONE) {
+        acc
+    } else {
+        val lessOne = n.subtract(BigDecimal.ONE)
+        fac(lessOne, acc.multiply(lessOne))
+    }
+}
+
+private fun BigDecimal.isWholeNumber(): Boolean {
+    return remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0
+}
+
+
+// Source - https://stackoverflow.com/a/19743026
+// Posted by barwnikk
+// Retrieved 2026-05-23, License - CC BY-SA 3.0
+private fun BigDecimal.betterSqrt(scale: Int): BigDecimal {
+    val two = 2.toBigDecimal()
+    var x0 = BigDecimal.ZERO
+    var x1 = sqrt(this.toDouble()).toBigDecimal()
+
+    while (x0 != x1) {
+        x0 = x1
+        x1 = this.divide(x0, scale, RoundingMode.HALF_UP)
+        x1 = x1.add(x0)
+        x1 = x1.divide(two, scale, RoundingMode.HALF_UP)
+    }
+
+    return x1
 }

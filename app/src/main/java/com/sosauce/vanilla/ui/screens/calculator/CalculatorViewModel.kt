@@ -43,7 +43,6 @@ class CalculatorViewModel(
                     val decimalPrecision =
                         getDecimalPrecision(application.applicationContext).first()
                     evaluatedCalculation = if (textFieldState.text.isEmpty()) {
-                        // there's currently a bug that will keep the preview to the last result even if this is empty, my head hurts too much to search a real fix atm
                         ""
                     } else {
                         Evaluator.eval(text, decimalPrecision)
