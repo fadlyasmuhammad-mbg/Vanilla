@@ -1,14 +1,14 @@
-<?xml version="1.1" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="theme">主题</string>
     <string name="settings">设置</string>
     <string name="dark_mode">深色</string>
     <string name="light_mode">浅色</string>
-    <string name="amoled_mode">Amoled</string>
+    <string name="amoled_mode">暗色模式 (Amoled)</string>
     <string name="version">版本</string>
     <string name="update">检查更新</string>
     <string name="cc_by_sosauce">Vanilla by sosauce</string>
-    <string name="follow_sys">系统</string>
+    <string name="follow_sys">跟随系统设置</string>
     <string name="font">字体</string>
     <string name="system">系统</string>
     <string name="buttons_anim">按钮动画</string>
@@ -18,8 +18,8 @@
     <string name="enable_history">启用历史记录</string>
     <string name="misc">杂项</string>
     <string name="haptic_feedback">触觉反馈</string>
-    <string name="ascending">上升</string>
-    <string name="descending">下降</string>
+    <string name="ascending">升序</string>
+    <string name="descending">降序</string>
     <string name="decimal_formatting">小数格式</string>
     <string name="show_clear_button">显示清除按钮</string>
     <string name="clear_button_desc">你仍然可以长按退格键来清空输入字段。</string>
@@ -27,7 +27,7 @@
     <string name="sort">排序</string>
     <string name="delete">删除</string>
     <string name="backspace">退格</string>
-    <string name="put_field">Put back in input field</string>
+    <string name="put_field">重新放入输入框</string>
     <string name="copy">复制到剪贴板</string>
     <string name="more_actions">更多操作</string>
     <string name="look_and_feel">外观和感觉</string>
@@ -37,14 +37,14 @@
     <string name="history_desc">记住一切！</string>
     <string name="max_history_items">历史记录中能保存的最大项目</string>
     <string name="no_limit">无限</string>
-    <string name="misc_desc">其他不值得单独页面的设置。</string>
+    <string name="misc_desc">其他的设置项不值得拥有单独页面。</string>
     <string name="formatting">格式化</string>
     <string name="show_back_button">显示返回按钮</string>
     <string name="clear_history">清除历史记录</string>
     <string name="cant_be_undone">你确定要这样做吗？此操作无法撤销！</string>
     <string name="cancel">取消</string>
     <string name="save_errors">将错误保存到历史记录</string>
-    <string name="support">支持</string>
+    <string name="support">帮助与支持</string>
     <string name="decimal_precision">小数精度</string>
     <string name="decimal_precision_desc">调整小数位数。</string>
     <string name="formatting_desc">让数字看起来更出色！</string>
@@ -54,4 +54,6 @@
     <string name="oldest_first">最早的在前</string>
     <string name="no_calc_found">未找到计算！</string>
     <string name="calc_empty">快开始计算吧！</string>
+    <string name="colored_operatos">彩色运算符</string>
+    <string name="swap_zero_and_decimal">调换 0 与小数点位置</string>
 </resources>
