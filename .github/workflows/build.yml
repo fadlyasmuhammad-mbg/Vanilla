@@ -1,4 +1,4 @@
-name: Build Vanilla APK and Send to Telegram
+name: Build Fadence Calc APK and Send to Telegram
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: vanilla-manual-build
+  group: fadence-calc-manual-build
   cancel-in-progress: true
 
 jobs:
@@ -109,7 +109,7 @@ jobs:
 
           mkdir -p output
 
-          APK_NAME="Vanilla_${{ steps.app_info.outputs.version_name }}_${{ steps.app_info.outputs.short_sha }}_debug.apk"
+          APK_NAME="FadenceCalc_${{ steps.app_info.outputs.version_name }}_${{ steps.app_info.outputs.short_sha }}_debug.apk"
           APK_PATH="output/${APK_NAME}"
 
           cp "$ORIGINAL_APK" "$APK_PATH"
@@ -132,7 +132,7 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Vanilla-${{ steps.app_info.outputs.version_name }}-${{ steps.app_info.outputs.short_sha }}
+          name: FadenceCalc-${{ steps.app_info.outputs.version_name }}-${{ steps.app_info.outputs.short_sha }}
           path: |
             ${{ steps.apk.outputs.path }}
             ${{ steps.apk.outputs.path }}.sha256
@@ -157,7 +157,7 @@ jobs:
         shell: bash
         run: |
           CAPTION=$(cat <<EOF
-          ✅ Vanilla APK Build Successful
+          ✅ Fadence Calc APK Build Successful
 
           File: ${{ steps.apk.outputs.name }}
           Version: ${{ steps.app_info.outputs.version_name }}
@@ -194,7 +194,7 @@ jobs:
           fi
 
           MESSAGE=$(cat <<EOF
-          ❌ Vanilla APK Build Failed
+          ❌ Fadence Calc APK Build Failed
 
           Branch: ${{ github.ref_name }}
           Commit: ${{ github.sha }}

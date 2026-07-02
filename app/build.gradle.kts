@@ -13,7 +13,7 @@ androidComponents {
         val mainOutput = variant.outputs.single { it.outputType == VariantOutputConfiguration.OutputType.SINGLE }
 
         @Suppress("UnstableApiUsage")
-        mainOutput.outputFileName = "Vanilla_${mainOutput.versionName.get()}.apk"
+        mainOutput.outputFileName = "FadenceCalc_${mainOutput.versionName.get()}.apk"
     }
 }
 
