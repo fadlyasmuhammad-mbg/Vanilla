@@ -1,1 +1,0 @@
-Eine simple, kleine, Open-Source Taschenrechner-App
