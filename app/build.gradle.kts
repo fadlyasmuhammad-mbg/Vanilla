@@ -24,12 +24,12 @@ kotlin {
 }
 
 android {
-    namespace = "com.sosauce.vanilla"
+    namespace = "com.fadlyas07.fadencecalc"
     compileSdk = 37
 
     defaultConfig {
 
-        applicationId = "com.sosauce.cutecalc"
+        applicationId = "com.fadlyas07.fadencecalc"
         minSdk = 23
         targetSdk = 37
         versionCode = 50004

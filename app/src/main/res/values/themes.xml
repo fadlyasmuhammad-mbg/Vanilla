@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.CuteCalc" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.FadenceCalc" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="Theme.CuteSplash" parent="Theme.SplashScreen">
+    <style name="Theme.FadenceSplash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/backgroundDark</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/icon_splash</item>
-        <item name="postSplashScreenTheme">@style/Theme.CuteCalc</item>
+        <item name="postSplashScreenTheme">@style/Theme.FadenceCalc</item>
 
     </style>
 
