@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.fadlyas07.fadencecalc.data.actions.CalcAction
+import com.fadlyas07.fadencecalc.ui.screens.calculator.CalculatorIntent
 import com.fadlyas07.fadencecalc.data.datastore.rememberIsLandscape
 import com.fadlyas07.fadencecalc.ui.screens.calculator.CalculatorScreen
 import com.fadlyas07.fadencecalc.ui.screens.calculator.CalculatorScreenLandscape
@@ -83,7 +83,7 @@ fun Nav() {
                         calculations = calculations,
                         onEvents = historyViewModel::onEvent,
                         onPutBackToField = { expression ->
-                            viewModel.handleAction(CalcAction.AddExpressionToField(expression))
+                            viewModel.onIntent(CalculatorIntent.RestoreExpression(expression))
                         },
                         onGotoMain = {
                             scope.launch {

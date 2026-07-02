@@ -10,15 +10,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.fadlyas07.fadencecalc.data.actions.CalcAction
 import com.fadlyas07.fadencecalc.data.datastore.getDecimalPrecision
 import com.fadlyas07.fadencecalc.domain.calculator.CalculationResult
 import com.fadlyas07.fadencecalc.domain.calculator.ExpressionEngine
 import com.fadlyas07.fadencecalc.domain.calculator.KevalExpressionEngine
 import com.fadlyas07.fadencecalc.utils.backspace
 import com.fadlyas07.fadencecalc.utils.insertText
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -33,28 +30,19 @@ class CalculatorViewModel(
 
     val textFieldState = TextFieldState()
 
-    private var screenState by mutableStateOf(
+    var uiState by mutableStateOf(
         CalculatorUiState()
     )
+        private set
 
     /**
-     * State baru untuk migrasi UI pada tahap berikutnya.
-     */
-    val uiState: CalculatorUiState
-        get() = screenState
-
-    /**
-     * Compatibility property agar CalculationDisplay dan
-     * history lama masih dapat digunakan.
+     * Temporary compatibility property for the existing
+     * history integration.
+     *
+     * It can be removed after CalculatorRoute owns history.
      */
     val evaluatedCalculation: String
-        get() = screenState.previewText
-
-    private val _previewShowErrors =
-        MutableStateFlow(false)
-
-    val previewShowErrors =
-        _previewShowErrors.asStateFlow()
+        get() = uiState.previewText
 
     private var activeDecimalPrecision =
         DEFAULT_DECIMAL_PRECISION
@@ -83,65 +71,64 @@ class CalculatorViewModel(
                 activeDecimalPrecision =
                     snapshot.precision
 
-                updatePreview(
+                val result =
                     expressionEngine.evaluate(
                         expression =
                             snapshot.expression,
                         decimalPrecision =
                             snapshot.precision
                     )
-                )
+
+                updatePreview(result)
             }
         }
     }
 
-    fun handleAction(
-        action: CalcAction
+    fun onIntent(
+        intent: CalculatorIntent
     ) {
-        hidePreviewError()
+        hideError()
 
-        when (action) {
-            CalcAction.GetResult -> {
-                commitResult()
+        when (intent) {
+            CalculatorIntent.Evaluate -> {
+                evaluateAndCommit()
             }
 
-            is CalcAction.AddToField -> {
-                textFieldState.insertText(
-                    action.char
-                )
-            }
-
-            CalcAction.ResetField -> {
+            CalculatorIntent.Clear -> {
                 clearCalculator()
             }
 
-            CalcAction.Backspace -> {
+            CalculatorIntent.DeletePrevious -> {
                 deletePreviousCharacter()
             }
 
-            is CalcAction.AddExpressionToField -> {
+            is CalculatorIntent.InsertSymbol -> {
+                textFieldState.insertText(
+                    intent.symbol
+                )
+            }
+
+            is CalculatorIntent.RestoreExpression -> {
                 textFieldState
                     .setTextAndPlaceCursorAtEnd(
-                        action.expression
+                        intent.expression
                     )
             }
         }
     }
 
     /**
-     * Evaluasi tombol sama dengan dilakukan secara sinkron.
-     *
-     * Dengan begitu CalculatorScreen bisa langsung membaca
-     * evaluatedCalculation untuk menyimpan history tanpa
-     * menunggu snapshotFlow.
+     * Evaluation is performed synchronously so the existing
+     * history code can read the committed result immediately.
      */
-    private fun commitResult() {
-        val result = expressionEngine.evaluate(
-            expression =
-                textFieldState.text.toString(),
-            decimalPrecision =
-                activeDecimalPrecision
-        )
+    private fun evaluateAndCommit() {
+        val result =
+            expressionEngine.evaluate(
+                expression =
+                    textFieldState.text.toString(),
+                decimalPrecision =
+                    activeDecimalPrecision
+            )
 
         when (result) {
             is CalculationResult.Value -> {
@@ -160,17 +147,13 @@ class CalculatorViewModel(
             }
 
             is CalculationResult.Failure -> {
-                showError(
-                    result.message
-                )
+                showError(result.message)
             }
         }
     }
 
     private fun clearCalculator() {
-        screenState = CalculatorUiState()
-        _previewShowErrors.value = false
-
+        uiState = CalculatorUiState()
         textFieldState.clearText()
     }
 
@@ -178,18 +161,17 @@ class CalculatorViewModel(
         textFieldState.backspace()
 
         if (textFieldState.text.isEmpty()) {
-            screenState = CalculatorUiState()
+            uiState = CalculatorUiState()
         }
     }
 
     private fun updatePreview(
         result: CalculationResult
     ) {
-        screenState = when (result) {
+        uiState = when (result) {
             is CalculationResult.Value -> {
                 CalculatorUiState(
-                    previewText = result.text,
-                    previewIsError = false
+                    previewText = result.text
                 )
             }
 
@@ -200,27 +182,29 @@ class CalculatorViewModel(
             is CalculationResult.Failure -> {
                 CalculatorUiState(
                     previewText = result.message,
-                    previewIsError = true
+                    previewIsError = true,
+                    revealError = false
                 )
             }
         }
-
-        _previewShowErrors.value = false
     }
 
     private fun showError(
         message: String
     ) {
-        screenState = CalculatorUiState(
+        uiState = CalculatorUiState(
             previewText = message,
-            previewIsError = true
+            previewIsError = true,
+            revealError = true
         )
-
-        _previewShowErrors.value = true
     }
 
-    private fun hidePreviewError() {
-        _previewShowErrors.value = false
+    private fun hideError() {
+        if (uiState.revealError) {
+            uiState = uiState.copy(
+                revealError = false
+            )
+        }
     }
 
     private data class ExpressionSnapshot(

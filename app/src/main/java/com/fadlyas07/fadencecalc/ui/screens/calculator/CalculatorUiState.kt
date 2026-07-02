@@ -1,12 +1,13 @@
 package com.fadlyas07.fadencecalc.ui.screens.calculator
 
 /**
- * State tampilan kalkulator.
+ * Immutable state rendered by the calculator UI.
  *
- * TextFieldState tetap dikelola terpisah karena Compose
- * membutuhkan cursor dan selection state.
+ * TextFieldState remains separate because it also stores
+ * cursor position and text selection.
  */
 data class CalculatorUiState(
     val previewText: String = "",
-    val previewIsError: Boolean = false
+    val previewIsError: Boolean = false,
+    val revealError: Boolean = false
 )

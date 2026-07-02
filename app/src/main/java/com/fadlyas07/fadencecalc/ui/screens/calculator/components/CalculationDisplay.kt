@@ -13,6 +13,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,38 +27,40 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fadlyas07.fadencecalc.data.calculator.Tokens
 import com.fadlyas07.fadencecalc.data.datastore.rememberColoredOperators
 import com.fadlyas07.fadencecalc.data.datastore.rememberDecimal
 import com.fadlyas07.fadencecalc.data.datastore.rememberIsLandscape
 import com.fadlyas07.fadencecalc.data.datastore.rememberUseSystemFont
-import com.fadlyas07.fadencecalc.ui.navigation.Screens
-import com.fadlyas07.fadencecalc.ui.screens.calculator.CalculatorViewModel
+import com.fadlyas07.fadencecalc.domain.calculator.CalculatorSyntax
+import com.fadlyas07.fadencecalc.ui.screens.calculator.CalculatorUiState
 import com.fadlyas07.fadencecalc.ui.theme.nunitoFontFamily
 import com.fadlyas07.fadencecalc.utils.formatNumber
-import com.fadlyas07.fadencecalc.utils.isErrorMessage
 
 @Composable
 fun CalculationDisplay(
-    modifier: Modifier = Modifier,
-    viewModel: CalculatorViewModel,
-    onNavigate: (Screens) -> Unit
+    textFieldState: TextFieldState,
+    state: CalculatorUiState,
+    modifier: Modifier = Modifier
 ) {
-    val useSystemFont by rememberUseSystemFont()
+    val useSystemFont by
+        rememberUseSystemFont()
+
     val shouldFormat by rememberDecimal()
-    val coloredOperators by rememberColoredOperators()
+
+    val coloredOperators by
+        rememberColoredOperators()
+
     val isLandscape = rememberIsLandscape()
 
-    val scrollState = rememberScrollState()
-    val previewScrollState = rememberScrollState()
+    val expressionScrollState =
+        rememberScrollState()
 
-    val previewCanShowErrors by
-        viewModel.previewShowErrors.collectAsStateWithLifecycle()
+    val previewScrollState =
+        rememberScrollState()
 
-    LaunchedEffect(viewModel.textFieldState.text) {
-        scrollState.animateScrollTo(
-            scrollState.maxValue
+    LaunchedEffect(textFieldState.text) {
+        expressionScrollState.animateScrollTo(
+            expressionScrollState.maxValue
         )
 
         previewScrollState.animateScrollTo(
@@ -65,24 +68,41 @@ fun CalculationDisplay(
         )
     }
 
-    val resultStyle = if (isLandscape) {
-        MaterialTheme.typography.headlineLarge
-    } else {
-        MaterialTheme.typography.displayMedium
-    }
+    val resultStyle =
+        if (isLandscape) {
+            MaterialTheme.typography.headlineLarge
+        } else {
+            MaterialTheme.typography.displayMedium
+        }
 
-    val expressionStyle = if (isLandscape) {
-        MaterialTheme.typography.headlineMedium
-    } else {
-        MaterialTheme.typography.headlineLarge
-    }
+    val expressionStyle =
+        if (isLandscape) {
+            MaterialTheme.typography.headlineMedium
+        } else {
+            MaterialTheme.typography.headlineLarge
+        }
+
+    val visiblePreview =
+        state.previewText
+            .formatNumber(shouldFormat)
+            .takeIf {
+                !state.previewIsError ||
+                    state.revealError
+            }
+            .orEmpty()
 
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(
-            if (isLandscape) 24.dp else 28.dp
+            if (isLandscape) {
+                24.dp
+            } else {
+                28.dp
+            }
         ),
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        color =
+            MaterialTheme.colorScheme
+                .surfaceContainerLow,
         tonalElevation = 0.dp
     ) {
         Column(
@@ -90,71 +110,98 @@ fun CalculationDisplay(
                 .fillMaxWidth()
                 .padding(
                     horizontal =
-                        if (isLandscape) 16.dp else 20.dp,
+                        if (isLandscape) {
+                            16.dp
+                        } else {
+                            20.dp
+                        },
                     vertical =
-                        if (isLandscape) 14.dp else 16.dp
+                        if (isLandscape) {
+                            14.dp
+                        } else {
+                            16.dp
+                        }
                 ),
-            verticalArrangement = Arrangement.Bottom
+            verticalArrangement =
+                Arrangement.Bottom
         ) {
             Text(
-                text = viewModel.evaluatedCalculation
-                    .formatNumber(shouldFormat)
-                    .takeIf {
-                        !it.isErrorMessage() ||
-                            previewCanShowErrors
-                    }
-                    ?: "",
+                text = visiblePreview,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .horizontalScroll(previewScrollState),
+                    .horizontalScroll(
+                        previewScrollState
+                    ),
                 style = resultStyle.copy(
                     textAlign = TextAlign.End,
                     fontWeight = FontWeight.Bold,
-                    color = if (
-                        !viewModel.evaluatedCalculation
-                            .isErrorMessage()
-                    ) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.error
-                    }
+                    color =
+                        if (state.previewIsError) {
+                            MaterialTheme
+                                .colorScheme
+                                .error
+                        } else {
+                            MaterialTheme
+                                .colorScheme
+                                .primary
+                        }
                 )
             )
 
             Spacer(
                 Modifier.height(
-                    if (isLandscape) 6.dp else 8.dp
+                    if (isLandscape) {
+                        6.dp
+                    } else {
+                        8.dp
+                    }
                 )
             )
 
             DisableSoftKeyboard {
                 BasicTextField(
-                    state = viewModel.textFieldState,
+                    state = textFieldState,
                     lineLimits =
-                        TextFieldLineLimits.SingleLine,
-                    textStyle = expressionStyle.copy(
-                        textAlign = TextAlign.End,
-                        color =
-                            MaterialTheme.colorScheme.onSurface,
-                        fontFamily = if (!useSystemFont) {
-                            nunitoFontFamily
-                        } else {
-                            null
-                        },
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
+                        TextFieldLineLimits
+                            .SingleLine,
+                    textStyle =
+                        expressionStyle.copy(
+                            textAlign =
+                                TextAlign.End,
+                            color =
+                                MaterialTheme
+                                    .colorScheme
+                                    .onSurface,
+                            fontFamily =
+                                if (
+                                    useSystemFont
+                                ) {
+                                    null
+                                } else {
+                                    nunitoFontFamily
+                                },
+                            fontWeight =
+                                FontWeight.SemiBold
+                        ),
+                    modifier =
+                        Modifier.fillMaxWidth(),
                     cursorBrush = SolidColor(
-                        MaterialTheme.colorScheme.primary
+                        MaterialTheme
+                            .colorScheme
+                            .primary
                     ),
-                    scrollState = scrollState,
+                    scrollState =
+                        expressionScrollState,
                     outputTransformation =
                         CalculatorOutputTransform(
-                            format = shouldFormat,
+                            format =
+                                shouldFormat,
                             coloredOperators =
                                 coloredOperators,
                             operatorColor =
-                                MaterialTheme.colorScheme.primary
+                                MaterialTheme
+                                    .colorScheme
+                                    .primary
                         )
                 )
             }
@@ -168,67 +215,85 @@ class CalculatorOutputTransform(
     private val operatorColor: Color
 ) : OutputTransformation {
 
-    override fun TextFieldBuffer.transformOutput() {
+    override fun TextFieldBuffer
+        .transformOutput() {
+
         if (format) {
-            val expression = originalText.toString()
-
-            if (expression.isEmpty()) {
-                return
-            }
-
-            var shift = 0
-
-            NUMBERS_REGEX
-                .findAll(expression)
-                .forEach { match ->
-                    val start =
-                        match.range.first + shift
-
-                    val end =
-                        match.range.last + 1 + shift
-
-                    val number = match.value
-
-                    val formatted =
-                        number.formatNumber(true)
-
-                    replace(
-                        start,
-                        end,
-                        formatted
-                    )
-
-                    shift +=
-                        formatted.length - number.length
-                }
+            formatNumbers()
         }
 
         if (coloredOperators) {
-            val operators = setOf(
-                Tokens.ADD,
-                Tokens.SUBTRACT,
-                Tokens.MULTIPLY,
-                Tokens.DIVIDE,
-                Tokens.POWER
-            )
-
-            asCharSequence()
-                .forEachIndexed { index, char ->
-                    if (char in operators) {
-                        addStyle(
-                            SpanStyle(
-                                color = operatorColor
-                            ),
-                            index,
-                            index + 1
-                        )
-                    }
-                }
+            highlightOperators()
         }
     }
 
-    companion object {
-        val NUMBERS_REGEX =
-            "[\\d.]+".toRegex()
+    private fun TextFieldBuffer.formatNumbers() {
+        val expression =
+            originalText.toString()
+
+        if (expression.isEmpty()) {
+            return
+        }
+
+        var shift = 0
+
+        NUMBER_PATTERN
+            .findAll(expression)
+            .forEach { match ->
+                val start =
+                    match.range.first + shift
+
+                val end =
+                    match.range.last +
+                        1 +
+                        shift
+
+                val originalNumber =
+                    match.value
+
+                val formattedNumber =
+                    originalNumber
+                        .formatNumber(true)
+
+                replace(
+                    start,
+                    end,
+                    formattedNumber
+                )
+
+                shift +=
+                    formattedNumber.length -
+                        originalNumber.length
+            }
+    }
+
+    private fun TextFieldBuffer
+        .highlightOperators() {
+
+        val operators = setOf(
+            CalculatorSyntax.ADD,
+            CalculatorSyntax.SUBTRACT,
+            CalculatorSyntax.MULTIPLY,
+            CalculatorSyntax.DIVIDE,
+            CalculatorSyntax.POWER
+        )
+
+        asCharSequence()
+            .forEachIndexed { index, char ->
+                if (char in operators) {
+                    addStyle(
+                        SpanStyle(
+                            color = operatorColor
+                        ),
+                        index,
+                        index + 1
+                    )
+                }
+            }
+    }
+
+    private companion object {
+        val NUMBER_PATTERN =
+            Regex("""[\d.]+""")
     }
 }

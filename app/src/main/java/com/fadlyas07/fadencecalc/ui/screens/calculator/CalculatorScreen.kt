@@ -35,7 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import com.fadlyas07.fadencecalc.R
-import com.fadlyas07.fadencecalc.data.actions.CalcAction
+import com.fadlyas07.fadencecalc.ui.screens.calculator.CalculatorIntent
 import com.fadlyas07.fadencecalc.data.calculator.Tokens
 import com.fadlyas07.fadencecalc.data.datastore.rememberHistoryMaxItems
 import com.fadlyas07.fadencecalc.data.datastore.rememberSaveErrorsToHistory
@@ -75,25 +75,25 @@ fun CalculatorScreen(
     val row1 = listOf(
         CalcButton(
             text = "!",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.FACTORIAL)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.FACTORIAL)) },
             rectangle = true,
             type = ButtonType.SPECIAL
         ),
         CalcButton(
             text = "%",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.MODULO)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.MODULO)) },
             rectangle = true,
             type = ButtonType.SPECIAL
         ),
         CalcButton(
             text = "√",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.SQUARE_ROOT)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.SQUARE_ROOT)) },
             rectangle = true,
             type = ButtonType.SPECIAL
         ),
         CalcButton(
             text = "π",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.PI)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.PI)) },
             rectangle = true,
             type = ButtonType.SPECIAL
         )
@@ -102,13 +102,13 @@ fun CalculatorScreen(
         if (showClearButton) {
             CalcButton(
                 text = "C",
-                onClick = { viewModel.handleAction(CalcAction.ResetField) },
+                onClick = { viewModel.onIntent(CalculatorIntent.Clear) },
                 type = ButtonType.ACTION
             )
         } else {
             CalcButton(
                 text = "(",
-                onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.OPEN_PARENTHESIS)) },
+                onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.OPEN_PARENTHESIS)) },
                 type = ButtonType.OPERATOR
             )
         },
@@ -116,8 +116,8 @@ fun CalculatorScreen(
             CalcButton(
                 text = PARENTHESES,
                 onClick = {
-                    viewModel.handleAction(
-                        CalcAction.AddToField(
+                    viewModel.onIntent(
+                        CalculatorIntent.InsertSymbol(
                             viewModel.textFieldState.text.toString().whichParenthesis()
                         )
                     )
@@ -127,84 +127,84 @@ fun CalculatorScreen(
         } else {
             CalcButton(
                 text = ")",
-                onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.CLOSED_PARENTHESIS)) },
+                onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.CLOSED_PARENTHESIS)) },
                 type = ButtonType.OPERATOR
             )
         },
         CalcButton(
             text = "^",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.POWER)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.POWER)) },
             type = ButtonType.OPERATOR
         ),
         CalcButton(
             text = "/",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.DIVIDE)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.DIVIDE)) },
             type = ButtonType.OPERATOR
         )
     )
     val row3 = listOf(
         CalcButton(
             text = "7",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.SEVEN)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.SEVEN)) },
             type = ButtonType.OTHER
         ),
         CalcButton(
             text = "8",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.EIGHT)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.EIGHT)) },
             type = ButtonType.OTHER
         ),
         CalcButton(
             text = "9",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.NINE)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.NINE)) },
             type = ButtonType.OTHER
         ),
         CalcButton(
             text = "×",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.MULTIPLY)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.MULTIPLY)) },
             type = ButtonType.OPERATOR
         )
     )
     val row4 = listOf(
         CalcButton(
             text = "4",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.FOUR)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.FOUR)) },
             type = ButtonType.OTHER
         ),
         CalcButton(
             text = "5",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.FIVE)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.FIVE)) },
             type = ButtonType.OTHER
         ),
         CalcButton(
             text = "6",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.SIX)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.SIX)) },
             type = ButtonType.OTHER
         ),
         CalcButton(
             text = "-",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.SUBTRACT)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.SUBTRACT)) },
             type = ButtonType.OPERATOR
         )
     )
     val row5 = listOf(
         CalcButton(
             text = "1",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.ONE)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.ONE)) },
             type = ButtonType.OTHER
         ),
         CalcButton(
             text = "2",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.TWO)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.TWO)) },
             type = ButtonType.OTHER
         ),
         CalcButton(
             text = "3",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.THREE)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.THREE)) },
             type = ButtonType.OTHER
         ),
         CalcButton(
             text = "+",
-            onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.ADD)) },
+            onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.ADD)) },
             type = ButtonType.OPERATOR
         )
     )
@@ -212,40 +212,40 @@ fun CalculatorScreen(
         if (!swapZeroAndDecimal) {
             CalcButton(
                 text = "0",
-                onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.ZERO)) },
+                onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.ZERO)) },
                 type = ButtonType.OTHER
             )
         } else {
             CalcButton(
                 text = localeDecimalChar,
-                onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.DECIMAL)) },
+                onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.DECIMAL)) },
                 type = ButtonType.OTHER
             )
         },
         if (swapZeroAndDecimal) {
             CalcButton(
                 text = "0",
-                onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.ZERO)) },
+                onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.ZERO)) },
                 type = ButtonType.OTHER
             )
         } else {
             CalcButton(
                 text = localeDecimalChar,
-                onClick = { viewModel.handleAction(CalcAction.AddToField(Tokens.DECIMAL)) },
+                onClick = { viewModel.onIntent(CalculatorIntent.InsertSymbol(Tokens.DECIMAL)) },
                 type = ButtonType.OTHER
             )
         },
         CalcButton(
             text = BACKSPACE,
-            onClick = { viewModel.handleAction(CalcAction.Backspace) },
-            onLongClick = { viewModel.handleAction(CalcAction.ResetField) },
+            onClick = { viewModel.onIntent(CalculatorIntent.DeletePrevious) },
+            onLongClick = { viewModel.onIntent(CalculatorIntent.Clear) },
             type = ButtonType.OTHER
         ),
         CalcButton(
             text = "=",
             onClick = {
                 val operation = viewModel.textFieldState.text.toString()
-                viewModel.handleAction(CalcAction.GetResult)
+                viewModel.onIntent(CalculatorIntent.Evaluate)
                 val result = viewModel.evaluatedCalculation
 
                 if (saveToHistory && operation != result) {
@@ -321,8 +321,8 @@ fun CalculatorScreen(
                         min = 150.dp,
                         max = 180.dp
                     ),
-                viewModel = viewModel,
-                onNavigate = onNavigate
+                textFieldState = viewModel.textFieldState,
+                    state = viewModel.uiState
             )
             Spacer(Modifier.height(10.dp))
 
