@@ -40,7 +40,7 @@ import com.fadlyas07.fadencecalc.ui.navigation.Screens
 import com.fadlyas07.fadencecalc.ui.screens.calculator.components.ButtonType
 import com.fadlyas07.fadencecalc.ui.screens.calculator.components.CalcButton
 import com.fadlyas07.fadencecalc.ui.screens.calculator.components.CalculationDisplay
-import com.fadlyas07.fadencecalc.ui.screens.calculator.components.CuteButton
+import com.fadlyas07.fadencecalc.ui.screens.calculator.components.FadenceButton
 import com.fadlyas07.fadencecalc.ui.screens.history.HistoryViewModel
 import com.fadlyas07.fadencecalc.utils.BACKSPACE
 import com.fadlyas07.fadencecalc.utils.PARENTHESES
@@ -276,17 +276,17 @@ fun CalculatorScreenLandscape(
 
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(9.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     val rows = listOf(row1, row2, row3)
 
                     rows.forEach { row ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(9.dp)
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             row.fastForEach { button ->
-                                CuteButton(
+                                FadenceButton(
                                     text = button.text,
                                     onClick = button.onClick,
                                     onLongClick = button.onLongClick,

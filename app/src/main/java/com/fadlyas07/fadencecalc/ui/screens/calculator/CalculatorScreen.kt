@@ -46,7 +46,7 @@ import com.fadlyas07.fadencecalc.ui.navigation.Screens
 import com.fadlyas07.fadencecalc.ui.screens.calculator.components.ButtonType
 import com.fadlyas07.fadencecalc.ui.screens.calculator.components.CalcButton
 import com.fadlyas07.fadencecalc.ui.screens.calculator.components.CalculationDisplay
-import com.fadlyas07.fadencecalc.ui.screens.calculator.components.CuteButton
+import com.fadlyas07.fadencecalc.ui.screens.calculator.components.FadenceButton
 import com.fadlyas07.fadencecalc.ui.screens.history.HistoryViewModel
 import com.fadlyas07.fadencecalc.utils.BACKSPACE
 import com.fadlyas07.fadencecalc.utils.PARENTHESES
@@ -309,7 +309,7 @@ fun CalculatorScreen(
     ) { pv ->
         Column(
             modifier = Modifier
-                .padding(horizontal = 10.dp)
+                .padding(horizontal = 14.dp)
                 .fillMaxSize()
                 .padding(pv),
             verticalArrangement = Arrangement.Bottom
@@ -319,22 +319,22 @@ fun CalculatorScreen(
                 viewModel = viewModel,
                 onNavigate = onNavigate
             )
-            Spacer(Modifier.height(5.dp))
+            Spacer(Modifier.height(12.dp))
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(9.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 val rows = listOf(row1, row2, row3, row4, row5, row6)
                 rows.forEach { row ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(9.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         row.fastForEach { button ->
                             key(button.text) {
-                                CuteButton(
+                                FadenceButton(
                                     modifier = Modifier.weight(1f),
                                     text = button.text,
                                     onClick = button.onClick,

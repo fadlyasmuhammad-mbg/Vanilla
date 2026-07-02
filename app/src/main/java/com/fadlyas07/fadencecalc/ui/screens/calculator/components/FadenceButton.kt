@@ -2,8 +2,9 @@
 
 package com.fadlyas07.fadencecalc.ui.screens.calculator.components
 
-import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -33,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.fadlyas07.fadencecalc.R
 import com.fadlyas07.fadencecalc.data.datastore.rememberIsLandscape
@@ -42,39 +44,73 @@ import com.fadlyas07.fadencecalc.utils.BACKSPACE
 import com.fadlyas07.fadencecalc.utils.PARENTHESES
 
 @Composable
-fun CuteButton(
+fun FadenceButton(
     modifier: Modifier = Modifier,
     text: String,
     buttonType: ButtonType = ButtonType.OTHER,
     onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    interactionSource: MutableInteractionSource =
+        remember { MutableInteractionSource() },
     rectangle: Boolean
 ) {
     val haptic = LocalHapticFeedback.current
     val shouldVibrate by rememberVibration()
     val useButtonsAnimation by rememberUseButtonsAnimation()
     val isPressed by interactionSource.collectIsPressedAsState()
-    val cornerRadius by animateIntAsState(
-        targetValue = if (isPressed && useButtonsAnimation) 24 else 50
-    )
     val isLandscape = rememberIsLandscape()
+
+    val cornerRadius by animateDpAsState(
+        targetValue = if (isPressed && useButtonsAnimation) {
+            18.dp
+        } else {
+            26.dp
+        },
+        label = "fadenceButtonCorner"
+    )
+
     val backgroundColor = when (buttonType) {
-        ButtonType.OPERATOR -> MaterialTheme.colorScheme.primary
-        ButtonType.OTHER -> MaterialTheme.colorScheme.surfaceContainer
-        ButtonType.ACTION -> MaterialTheme.colorScheme.tertiary
-        ButtonType.SPECIAL -> Color.Transparent
+        ButtonType.OPERATOR ->
+            MaterialTheme.colorScheme.primary
+
+        ButtonType.ACTION ->
+            MaterialTheme.colorScheme.tertiary
+
+        ButtonType.SPECIAL ->
+            MaterialTheme.colorScheme.surface
+
+        ButtonType.OTHER ->
+            MaterialTheme.colorScheme.surfaceContainer
     }
+
+    val borderColor = when (buttonType) {
+        ButtonType.SPECIAL ->
+            MaterialTheme.colorScheme.outlineVariant
+
+        else ->
+            Color.Transparent
+    }
+
     Box(
         modifier = modifier
             .semantics { role = Role.Button }
             .clip(RoundedCornerShape(cornerRadius))
+            .border(
+                width = if (buttonType == ButtonType.SPECIAL) 1.dp else 0.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(cornerRadius)
+            )
             .combinedClickable(
                 interactionSource = interactionSource,
                 indication = ripple(),
                 onClick = {
                     onClick()
-                    if (shouldVibrate) haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+
+                    if (shouldVibrate) {
+                        haptic.performHapticFeedback(
+                            HapticFeedbackType.Confirm
+                        )
+                    }
                 },
                 onLongClick = onLongClick
             )
@@ -84,18 +120,21 @@ fun CuteButton(
             )
             .background(backgroundColor)
             .let {
-                if (!isLandscape && !rectangle) it.aspectRatio(1f) else it
+                if (!isLandscape && !rectangle) {
+                    it.aspectRatio(1f)
+                } else {
+                    it
+                }
             },
         contentAlignment = Alignment.Center
     ) {
-
         when (text) {
             BACKSPACE -> {
                 Icon(
                     painter = painterResource(R.drawable.backspace_filled),
                     contentDescription = stringResource(R.string.back),
-                    tint = MaterialTheme.colorScheme.contentColorFor(backgroundColor),
-                    modifier = Modifier.size(45.dp)
+                    tint = contentColorFor(backgroundColor),
+                    modifier = Modifier.size(32.dp)
                 )
             }
 
@@ -103,8 +142,8 @@ fun CuteButton(
                 Icon(
                     painter = painterResource(R.drawable.parentheses),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.contentColorFor(backgroundColor),
-                    modifier = Modifier.size(45.dp)
+                    tint = contentColorFor(backgroundColor),
+                    modifier = Modifier.size(32.dp)
                 )
             }
 
@@ -112,12 +151,15 @@ fun CuteButton(
                 Text(
                     text = text,
                     color = contentColorFor(backgroundColor),
-                    style = MaterialTheme.typography.displaySmallEmphasized
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = when (buttonType) {
+                        ButtonType.OTHER -> FontWeight.SemiBold
+                        else -> FontWeight.Bold
+                    }
                 )
             }
         }
     }
-
 }
 
 enum class ButtonType {
@@ -126,11 +168,3 @@ enum class ButtonType {
     ACTION,
     OTHER
 }
-
-
-
-
-
-
-
-
