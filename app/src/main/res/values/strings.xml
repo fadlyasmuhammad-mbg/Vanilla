@@ -17,7 +17,7 @@
     <string name="use_history">Use history</string>
     <string name="history_not_enabled">It looks like history isn\'t enabled!</string>
     <string name="enable_history">Enable history</string>
-    <string name="misc">Misc</string>
+    <string name="misc">General</string>
     <string name="haptic_feedback">Haptic feedback</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
@@ -31,15 +31,15 @@
     <string name="put_field">Put back in input field</string>
     <string name="copy">Copy to clipboard</string>
     <string name="more_actions">More actions</string>
-    <string name="look_and_feel">Look and feel</string>
-    <string name="look_and_feel_desc">Why not calculate in style?</string>
+    <string name="look_and_feel">Appearance</string>
+    <string name="look_and_feel_desc">Theme, font, and interface preferences.</string>
     <string name="default_font">Default</string>
     <string name="ui">UI</string>
-    <string name="history_desc">Remember everything!</string>
+    <string name="history_desc">Manage saved calculations and history behavior.</string>
     <string name="max_history_items">Max saved items in history</string>
     <string name="no_limit">No limit</string>
-    <string name="misc_desc">Other settings that didn\'t deserve their own page.</string>
-    <string name="formatting">Formatting</string>
+    <string name="misc_desc">Additional application preferences.</string>
+    <string name="formatting">Number format</string>
     <string name="show_back_button">Show back button</string>
     <string name="clear_history">Clear history</string>
     <string name="cant_be_undone">Are you sure you want to do that? This action can\'t be undone!</string>
@@ -48,7 +48,7 @@
     <string name="support">Support</string>
     <string name="decimal_precision">Decimal precision</string>
     <string name="decimal_precision_desc">Adjust the number of decimal places.</string>
-    <string name="formatting_desc">Make numbers look great!</string>
+    <string name="formatting_desc">Control decimals and number presentation.</string>
     <string name="show_ls">Show app on lock screen</string>
     <string name="show_ls_desc">The app will still be usable on the lock screen. This can be useful for example, in stores.</string>
     <string name="newest_first">Newest first</string>
@@ -79,4 +79,6 @@
     <string name="original_project_description">Based on Vanilla by sosauce.</string>
     <string name="license_name">GPL-3.0 license</string>
     <string name="license_description">View the open-source license.</string>
+    <string name="preferences">Preferences</string>
+    <string name="about_fadence_calc">About Fadence Calc</string>
 </resources>
