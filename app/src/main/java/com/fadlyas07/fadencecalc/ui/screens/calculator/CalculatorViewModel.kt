@@ -42,9 +42,10 @@ class CalculatorViewModel(
                 .collectLatest { text ->
                     val decimalPrecision =
                         getDecimalPrecision(application.applicationContext).first()
-                    evaluatedCalculation = if (textFieldState.text.isEmpty()) {
-                        ""
-                    } else {
+                    evaluatedCalculation = if (text.isEmpty()) {
+                    Evaluator.resetPreviousResult()
+                    ""
+                } else {
                         Evaluator.eval(text, decimalPrecision)
                     }
                 }
@@ -64,8 +65,19 @@ class CalculatorViewModel(
             }
 
             is CalcAction.AddToField -> textFieldState.insertText(action.char)
-            is CalcAction.ResetField -> textFieldState.clearText()
-            is CalcAction.Backspace -> textFieldState.backspace()
+            is CalcAction.ResetField -> {
+                Evaluator.resetPreviousResult()
+                evaluatedCalculation = ""
+                textFieldState.clearText()
+            }
+            is CalcAction.Backspace -> {
+                textFieldState.backspace()
+
+                if (textFieldState.text.isEmpty()) {
+                    Evaluator.resetPreviousResult()
+                    evaluatedCalculation = ""
+                }
+            }
             is CalcAction.AddExpressionToField -> textFieldState.setTextAndPlaceCursorAtEnd(action.expression)
         }
     }

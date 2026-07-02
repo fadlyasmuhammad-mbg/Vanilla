@@ -58,6 +58,11 @@ object Evaluator {
 
     private var prevResult: String = ""
 
+    @JvmStatic
+    fun resetPreviousResult() {
+        prevResult = ""
+    }
+
 
     @JvmStatic
     fun eval(formula: String, precision: Int): String = try {
