@@ -19,4 +19,5 @@
     <string name="font">فونت</string>
     <string name="show_back_button">نمایش دکمه بازگشت</string>
     <string name="cancel">لغو</string>
+    <string name="about_app_credits">Fadence Calc by Muhammad Fadly A.S.</string>
 </resources>
