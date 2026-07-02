@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fadence Calc</string>
+
+    <string name="theme">Tema</string>
+    <string name="settings">Pengaturan</string>
+    <string name="dark_mode">Gelap</string>
+    <string name="light_mode">Terang</string>
+    <string name="amoled_mode">AMOLED</string>
+    <string name="version">Versi</string>
+    <string name="update">Periksa pembaruan</string>
+
+    <string name="about_app_credits">Fadence Calc by Muhammad Fadly A.S.</string>
+
+    <string name="follow_sys">Ikuti sistem</string>
+    <string name="font">Font</string>
+    <string name="system">Sistem</string>
+    <string name="buttons_anim">Animasi tombol</string>
+
+    <string name="history">Riwayat</string>
+    <string name="use_history">Gunakan riwayat</string>
+    <string name="history_not_enabled">Sepertinya fitur riwayat belum diaktifkan!</string>
+    <string name="enable_history">Aktifkan riwayat</string>
+
+    <string name="misc">Lainnya</string>
+    <string name="haptic_feedback">Umpan balik getaran</string>
+    <string name="ascending">Menaik</string>
+    <string name="descending">Menurun</string>
+
+    <string name="decimal_formatting">Format desimal</string>
+    <string name="show_clear_button">Tampilkan tombol hapus</string>
+    <string name="clear_button_desc">Anda tetap dapat menekan lama tombol hapus untuk membersihkan kolom input.</string>
+
+    <string name="back">Kembali</string>
+    <string name="sort">Urutkan</string>
+    <string name="delete">Hapus</string>
+    <string name="backspace">Hapus satu karakter</string>
+    <string name="put_field">Masukkan kembali ke kolom input</string>
+    <string name="copy">Salin ke papan klip</string>
+    <string name="more_actions">Tindakan lainnya</string>
+
+    <string name="look_and_feel">Tampilan</string>
+    <string name="look_and_feel_desc">Buat pengalaman menghitung menjadi lebih menarik.</string>
+    <string name="default_font">Bawaan</string>
+    <string name="ui">Antarmuka</string>
+
+    <string name="history_desc">Simpan semua perhitungan Anda.</string>
+    <string name="max_history_items">Jumlah maksimum riwayat tersimpan</string>
+    <string name="no_limit">Tanpa batas</string>
+
+    <string name="misc_desc">Pengaturan tambahan lainnya.</string>
+    <string name="formatting">Pemformatan</string>
+    <string name="show_back_button">Tampilkan tombol kembali</string>
+
+    <string name="clear_history">Hapus riwayat</string>
+    <string name="cant_be_undone">Yakin ingin melakukannya? Tindakan ini tidak dapat dibatalkan!</string>
+    <string name="cancel">Batal</string>
+
+    <string name="save_errors">Simpan kesalahan ke riwayat</string>
+    <string name="support">Dukungan</string>
+
+    <string name="decimal_precision">Ketelitian desimal</string>
+    <string name="decimal_precision_desc">Atur jumlah angka di belakang koma.</string>
+    <string name="formatting_desc">Atur tampilan angka agar lebih mudah dibaca.</string>
+
+    <string name="show_ls">Tampilkan aplikasi di layar kunci</string>
+    <string name="show_ls_desc">Aplikasi tetap dapat digunakan saat perangkat berada di layar kunci. Fitur ini dapat berguna, misalnya untuk penggunaan di toko.</string>
+
+    <string name="newest_first">Terbaru terlebih dahulu</string>
+    <string name="oldest_first">Terlama terlebih dahulu</string>
+    <string name="no_calc_found">Tidak ada perhitungan yang ditemukan!</string>
+    <string name="calc_empty">Mulailah melakukan perhitungan!</string>
+
+    <string name="colored_operatos">Operator berwarna</string>
+    <string name="swap_zero_and_decimal">Tukar posisi nol &amp; desimal</string>
+</resources>
