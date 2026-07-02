@@ -144,7 +144,7 @@ fun SettingsDropdownMenu(
                     targetState = value
                 ) {
                     Text(
-                        text = if (it == Long.MAX_VALUE) stringResource(R.string.no_limit) else it.toString(),
+                        text = if (it == Long.MAX_VALUE || it == 1000L) stringResource(R.string.no_limit) else it.toString(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 15.sp
                     )
