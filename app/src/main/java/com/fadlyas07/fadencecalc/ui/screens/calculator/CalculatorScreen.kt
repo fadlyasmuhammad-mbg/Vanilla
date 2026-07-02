@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
@@ -315,7 +316,12 @@ fun CalculatorScreen(
             verticalArrangement = Arrangement.Bottom
         ) {
             CalculationDisplay(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(
+                        min = 170.dp,
+                        max = 230.dp
+                    ),
                 viewModel = viewModel,
                 onNavigate = onNavigate
             )

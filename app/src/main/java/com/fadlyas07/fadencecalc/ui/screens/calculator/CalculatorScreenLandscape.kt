@@ -4,10 +4,10 @@ package com.fadlyas07.fadencecalc.ui.screens.calculator
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,13 +21,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
-import androidx.compose.ui.zIndex
 import com.fadlyas07.fadencecalc.R
 import com.fadlyas07.fadencecalc.data.actions.CalcAction
 import com.fadlyas07.fadencecalc.data.calculator.Tokens
@@ -236,70 +234,103 @@ fun CalculatorScreenLandscape(
         modifier = modifier,
         contentWindowInsets = WindowInsets.safeDrawing
     ) { pv ->
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(pv),
-            contentAlignment = Alignment.BottomCenter
+                .padding(pv)
+                .padding(
+                    horizontal = 16.dp,
+                    vertical = 12.dp
+                ),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Left panel: navigation and calculation display.
             Column(
                 modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .zIndex(1f) //history doesnt click otherwise ?
+                    .weight(0.40f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                IconButton(
-                    onClick = { onNavigate(Screens.SETTINGS) },
-                    shapes = IconButtonDefaults.shapes()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.settings_filled),
-                        contentDescription = stringResource(R.string.settings)
-                    )
-                }
-                IconButton(
-                    onClick = onGotoHistory,
-                    shapes = IconButtonDefaults.shapes()
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.history_rounded),
-                        contentDescription = stringResource(R.string.history)
-                    )
-                }
-            }
+                    IconButton(
+                        onClick = {
+                            onNavigate(Screens.SETTINGS)
+                        },
+                        shapes = IconButtonDefaults.shapes()
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                R.drawable.settings_filled
+                            ),
+                            contentDescription = stringResource(
+                                R.string.settings
+                            )
+                        )
+                    }
 
-            Column {
+                    IconButton(
+                        onClick = onGotoHistory,
+                        shapes = IconButtonDefaults.shapes()
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                R.drawable.history_rounded
+                            ),
+                            contentDescription = stringResource(
+                                R.string.history
+                            )
+                        )
+                    }
+                }
+
                 CalculationDisplay(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
                     viewModel = viewModel,
                     onNavigate = onNavigate
                 )
+            }
 
+            // Right panel: full-width calculator keypad.
+            Column(
+                modifier = Modifier
+                    .weight(0.60f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                val rows = listOf(
+                    row1,
+                    row2,
+                    row3
+                )
 
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    val rows = listOf(row1, row2, row3)
-
-                    rows.forEach { row ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            row.fastForEach { button ->
-                                FadenceButton(
-                                    text = button.text,
-                                    onClick = button.onClick,
-                                    onLongClick = button.onLongClick,
-                                    rectangle = true,
-                                    buttonType = button.type
-                                )
-                            }
+                rows.fastForEach { row ->
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        horizontalArrangement =
+                            Arrangement.spacedBy(10.dp)
+                    ) {
+                        row.fastForEach { button ->
+                            FadenceButton(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight(),
+                                text = button.text,
+                                onClick = button.onClick,
+                                onLongClick = button.onLongClick,
+                                rectangle = true,
+                                buttonType = button.type
+                            )
                         }
                     }
                 }
             }
         }
-
-
     }
 }
