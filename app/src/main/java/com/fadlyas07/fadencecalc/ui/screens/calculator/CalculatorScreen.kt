@@ -310,7 +310,7 @@ fun CalculatorScreen(
     ) { pv ->
         Column(
             modifier = Modifier
-                .padding(horizontal = 14.dp)
+                .padding(horizontal = 16.dp)
                 .fillMaxSize()
                 .padding(pv),
             verticalArrangement = Arrangement.Bottom
@@ -319,13 +319,13 @@ fun CalculatorScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(
-                        min = 170.dp,
-                        max = 230.dp
+                        min = 150.dp,
+                        max = 180.dp
                     ),
                 viewModel = viewModel,
                 onNavigate = onNavigate
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(10.dp))
 
             Column(
                 modifier = Modifier

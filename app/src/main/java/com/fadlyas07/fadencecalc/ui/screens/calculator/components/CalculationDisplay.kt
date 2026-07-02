@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fadlyas07.fadencecalc.data.calculator.Tokens
 import com.fadlyas07.fadencecalc.data.datastore.rememberColoredOperators
 import com.fadlyas07.fadencecalc.data.datastore.rememberDecimal
+import com.fadlyas07.fadencecalc.data.datastore.rememberIsLandscape
 import com.fadlyas07.fadencecalc.data.datastore.rememberUseSystemFont
 import com.fadlyas07.fadencecalc.ui.navigation.Screens
 import com.fadlyas07.fadencecalc.ui.screens.calculator.CalculatorViewModel
@@ -46,6 +47,7 @@ fun CalculationDisplay(
     val useSystemFont by rememberUseSystemFont()
     val shouldFormat by rememberDecimal()
     val coloredOperators by rememberColoredOperators()
+    val isLandscape = rememberIsLandscape()
 
     val scrollState = rememberScrollState()
     val previewScrollState = rememberScrollState()
@@ -54,24 +56,43 @@ fun CalculationDisplay(
         viewModel.previewShowErrors.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel.textFieldState.text) {
-        scrollState.animateScrollTo(scrollState.maxValue)
+        scrollState.animateScrollTo(
+            scrollState.maxValue
+        )
+
         previewScrollState.animateScrollTo(
             previewScrollState.maxValue
         )
     }
 
+    val resultStyle = if (isLandscape) {
+        MaterialTheme.typography.headlineLarge
+    } else {
+        MaterialTheme.typography.displayMedium
+    }
+
+    val expressionStyle = if (isLandscape) {
+        MaterialTheme.typography.headlineMedium
+    } else {
+        MaterialTheme.typography.headlineLarge
+    }
+
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(32.dp),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        tonalElevation = 1.dp
+        shape = RoundedCornerShape(
+            if (isLandscape) 24.dp else 28.dp
+        ),
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        tonalElevation = 0.dp
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    horizontal = 20.dp,
-                    vertical = 18.dp
+                    horizontal =
+                        if (isLandscape) 16.dp else 20.dp,
+                    vertical =
+                        if (isLandscape) 14.dp else 16.dp
                 ),
             verticalArrangement = Arrangement.Bottom
         ) {
@@ -86,38 +107,42 @@ fun CalculationDisplay(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(previewScrollState),
-                style = MaterialTheme.typography.displayLarge.copy(
+                style = resultStyle.copy(
                     textAlign = TextAlign.End,
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Bold,
                     color = if (
                         !viewModel.evaluatedCalculation
                             .isErrorMessage()
                     ) {
-                        MaterialTheme.colorScheme.tertiary
+                        MaterialTheme.colorScheme.primary
                     } else {
                         MaterialTheme.colorScheme.error
                     }
                 )
             )
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(
+                Modifier.height(
+                    if (isLandscape) 6.dp else 8.dp
+                )
+            )
 
             DisableSoftKeyboard {
                 BasicTextField(
                     state = viewModel.textFieldState,
-                    lineLimits = TextFieldLineLimits.SingleLine,
-                    textStyle =
-                        MaterialTheme.typography.displaySmall.copy(
-                            textAlign = TextAlign.End,
-                            color =
-                                MaterialTheme.colorScheme.onSurface,
-                            fontFamily = if (!useSystemFont) {
-                                nunitoFontFamily
-                            } else {
-                                null
-                            },
-                            fontWeight = FontWeight.SemiBold
-                        ),
+                    lineLimits =
+                        TextFieldLineLimits.SingleLine,
+                    textStyle = expressionStyle.copy(
+                        textAlign = TextAlign.End,
+                        color =
+                            MaterialTheme.colorScheme.onSurface,
+                        fontFamily = if (!useSystemFont) {
+                            nunitoFontFamily
+                        } else {
+                            null
+                        },
+                        fontWeight = FontWeight.SemiBold
+                    ),
                     modifier = Modifier.fillMaxWidth(),
                     cursorBrush = SolidColor(
                         MaterialTheme.colorScheme.primary
@@ -153,16 +178,29 @@ class CalculatorOutputTransform(
 
             var shift = 0
 
-            NUMBERS_REGEX.findAll(expression).forEach { match ->
-                val start = match.range.first + shift
-                val end = match.range.last + 1 + shift
-                val number = match.value
-                val formatted = number.formatNumber(true)
+            NUMBERS_REGEX
+                .findAll(expression)
+                .forEach { match ->
+                    val start =
+                        match.range.first + shift
 
-                replace(start, end, formatted)
+                    val end =
+                        match.range.last + 1 + shift
 
-                shift += formatted.length - number.length
-            }
+                    val number = match.value
+
+                    val formatted =
+                        number.formatNumber(true)
+
+                    replace(
+                        start,
+                        end,
+                        formatted
+                    )
+
+                    shift +=
+                        formatted.length - number.length
+                }
         }
 
         if (coloredOperators) {
@@ -174,19 +212,23 @@ class CalculatorOutputTransform(
                 Tokens.POWER
             )
 
-            asCharSequence().forEachIndexed { index, char ->
-                if (char in operators) {
-                    addStyle(
-                        SpanStyle(color = operatorColor),
-                        index,
-                        index + 1
-                    )
+            asCharSequence()
+                .forEachIndexed { index, char ->
+                    if (char in operators) {
+                        addStyle(
+                            SpanStyle(
+                                color = operatorColor
+                            ),
+                            index,
+                            index + 1
+                        )
+                    }
                 }
-            }
         }
     }
 
     companion object {
-        val NUMBERS_REGEX = "[\\d.]+".toRegex()
+        val NUMBERS_REGEX =
+            "[\\d.]+".toRegex()
     }
 }

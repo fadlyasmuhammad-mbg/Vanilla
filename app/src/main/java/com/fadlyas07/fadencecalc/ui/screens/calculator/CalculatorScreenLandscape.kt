@@ -247,7 +247,7 @@ fun CalculatorScreenLandscape(
             // Left panel: navigation and calculation display.
             Column(
                 modifier = Modifier
-                    .weight(0.40f)
+                    .weight(0.38f)
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -298,14 +298,43 @@ fun CalculatorScreenLandscape(
             // Right panel: full-width calculator keypad.
             Column(
                 modifier = Modifier
-                    .weight(0.60f)
+                    .weight(0.62f)
                     .fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val rows = listOf(
-                    row1,
-                    row2,
-                    row3
+                    listOf(
+                        row3[0],
+                        row2[0],
+                        row1[0],
+                        row1[1],
+                        row1[5],
+                        row3[6]
+                    ),
+                    listOf(
+                        row1[4],
+                        row1[3],
+                        row1[2],
+                        row1[7],
+                        row1[6],
+                        row3[5]
+                    ),
+                    listOf(
+                        row2[2],
+                        row2[3],
+                        row2[4],
+                        row2[7],
+                        row2[6],
+                        row2[5]
+                    ),
+                    listOf(
+                        row3[2],
+                        row3[1],
+                        row2[1],
+                        row3[3],
+                        row3[4],
+                        row3[7]
+                    )
                 )
 
                 rows.fastForEach { row ->
