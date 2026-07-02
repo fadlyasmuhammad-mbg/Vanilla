@@ -1,6 +1,7 @@
 name: Build Fadence Calc APK and Send to Telegram
 
 on:
+  push:
   workflow_dispatch:
 
 permissions:
