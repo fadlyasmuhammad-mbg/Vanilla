@@ -66,7 +66,7 @@ fun AboutCard() {
                 )
             }
             Column {
-                Text("Vanilla")
+                Text(stringResource(R.string.app_name))
                 Text(
                     text = "${stringResource(id = R.string.version)} ${context.appVersion}",
                     style = MaterialTheme.typography.bodyMediumEmphasized.copy(
