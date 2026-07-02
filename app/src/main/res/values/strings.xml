@@ -57,4 +57,26 @@
     <string name="calc_empty">Start calculating already!</string>
     <string name="colored_operatos">Colored operators</string>
     <string name="swap_zero_and_decimal">Swap zero &amp; decimal</string>
+
+    <string name="about">About</string>
+    <string name="about_short_description">Simple, fast, and privacy-friendly calculator.</string>
+    <string name="developer">Developer</string>
+    <string name="developer_name">Muhammad Fadly A.S.</string>
+    <string name="developer_description">GitHub: fadlyas07</string>
+    <string name="project">Project</string>
+    <string name="source_code">Source code</string>
+    <string name="source_code_description">View the application source repository.</string>
+    <string name="contributors">Contributors</string>
+    <string name="contributors_description">View everyone who contributed to the project.</string>
+    <string name="report_issue">Report an issue</string>
+    <string name="report_issue_description">Report a bug or request an improvement.</string>
+    <string name="check_updates">Check for updates</string>
+    <string name="check_updates_description">View available application releases.</string>
+    <string name="support_developer">Support the developer</string>
+    <string name="support_developer_description">Visit the developer profile.</string>
+    <string name="open_source">Open source</string>
+    <string name="original_project">Original project</string>
+    <string name="original_project_description">Based on Vanilla by sosauce.</string>
+    <string name="license_name">GPL-3.0 license</string>
+    <string name="license_description">View the open-source license.</string>
 </resources>

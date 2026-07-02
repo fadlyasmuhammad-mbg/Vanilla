@@ -10,5 +10,6 @@ enum class SettingsScreen {
     LOOK_AND_FEEL,
     HISTORY,
     FORMATTING,
-    MISC
+    MISC,
+    ABOUT
 }

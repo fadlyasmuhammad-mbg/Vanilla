@@ -99,6 +99,9 @@ fun SettingsScreen(
                 SettingsScreen.HISTORY -> { SettingsHistory() }
                 SettingsScreen.FORMATTING -> { SettingsFormatting() }
                 SettingsScreen.MISC -> { SettingsMisc() }
+                    SettingsScreen.ABOUT -> {
+                        SettingsAbout()
+                    }
             }
         }
     }
@@ -136,7 +139,13 @@ private fun SettingsPage(
     )
 
     Column {
-        AboutCard()
+        AboutCard(
+            onClick = {
+                onNavigateSettings(
+                    SettingsScreen.ABOUT
+                )
+            }
+        )
         Spacer(Modifier.height(20.dp))
         settingsCategories.fastForEachIndexed { index, category ->
             SettingsCategoryCard(

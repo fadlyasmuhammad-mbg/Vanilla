@@ -12,3 +12,9 @@ object CuteTheme {
     const val LIGHT = "LIGHT"
     const val AMOLED = "AMOLED"
 }
+const val DEVELOPER_PROFILE = "https://github.com/fadlyas07"
+const val PROJECT_SOURCE = "https://github.com/fadlyasmuhammad-mbg/Vanilla"
+const val CONTRIBUTORS_PAGE = "https://github.com/fadlyasmuhammad-mbg/Vanilla/graphs/contributors"
+const val ISSUES_PAGE = "https://github.com/fadlyasmuhammad-mbg/Vanilla/issues"
+const val UPSTREAM_PROJECT = "https://github.com/sosauce/Vanilla"
+const val LICENSE_PAGE = "https://github.com/fadlyasmuhammad-mbg/Vanilla/blob/main/LICENSE"

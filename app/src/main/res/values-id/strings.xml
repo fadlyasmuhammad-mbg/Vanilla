@@ -73,4 +73,26 @@
 
     <string name="colored_operatos">Operator berwarna</string>
     <string name="swap_zero_and_decimal">Tukar posisi nol &amp; desimal</string>
+
+    <string name="about">Tentang</string>
+    <string name="about_short_description">Kalkulator sederhana, cepat, dan ramah privasi.</string>
+    <string name="developer">Pengembang</string>
+    <string name="developer_name">Muhammad Fadly A.S.</string>
+    <string name="developer_description">GitHub: fadlyas07</string>
+    <string name="project">Proyek</string>
+    <string name="source_code">Kode sumber</string>
+    <string name="source_code_description">Lihat repositori kode sumber aplikasi.</string>
+    <string name="contributors">Kontributor</string>
+    <string name="contributors_description">Lihat semua orang yang berkontribusi.</string>
+    <string name="report_issue">Laporkan masalah</string>
+    <string name="report_issue_description">Laporkan bug atau usulkan peningkatan.</string>
+    <string name="check_updates">Periksa pembaruan</string>
+    <string name="check_updates_description">Lihat rilis aplikasi yang tersedia.</string>
+    <string name="support_developer">Dukung pengembang</string>
+    <string name="support_developer_description">Kunjungi profil pengembang.</string>
+    <string name="open_source">Sumber terbuka</string>
+    <string name="original_project">Proyek asli</string>
+    <string name="original_project_description">Dibuat berdasarkan Vanilla oleh sosauce.</string>
+    <string name="license_name">Lisensi GPL-3.0</string>
+    <string name="license_description">Lihat lisensi sumber terbuka.</string>
 </resources>
