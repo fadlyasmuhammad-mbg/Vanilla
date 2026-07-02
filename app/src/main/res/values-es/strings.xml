@@ -21,8 +21,6 @@
     <string name="ascending">Ascendente</string>
     <string name="descending">Descendente</string>
     <string name="decimal_formatting">Formato decimal</string>
-    <string name="show_clear_button">Mostrar botón de borrar</string>
-    <string name="clear_button_desc">Aún puedes mantener presionado el botón de retroceso para borrar el campo de entrada.</string>
     <string name="back">Atrás</string>
     <string name="sort">Ordenar</string>
     <string name="delete">Eliminar</string>

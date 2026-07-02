@@ -21,8 +21,6 @@
     <string name="ascending">Ascendente</string>
     <string name="descending">Discendente</string>
     <string name="decimal_formatting">Formattazione decimale</string>
-    <string name="show_clear_button">Mostra il pulsante cancella</string>
-    <string name="clear_button_desc">È comunque possibile tenere premuto il tasto backspace per cancellare il contenuto del campo di immissione.</string>
     <string name="back">Indietro</string>
     <string name="sort">Ordina</string>
     <string name="delete">Elimina</string>

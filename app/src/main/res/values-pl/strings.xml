@@ -21,8 +21,6 @@
     <string name="ascending">Rosnąco</string>
     <string name="descending">Malejąco</string>
     <string name="decimal_formatting">Formatowanie dziesiętne</string>
-    <string name="show_clear_button">Pokaż przycisk wyczyść</string>
-    <string name="clear_button_desc">Aby wyczyścić pole wprowadzania danych, nadal możesz nacisnąć i przytrzymać przycisk Backspace.</string>
     <string name="back">Wstecz</string>
     <string name="sort">Sortuj</string>
     <string name="delete">Usuń</string>

@@ -28,8 +28,6 @@
     <string name="descending">Menurun</string>
 
     <string name="decimal_formatting">Format desimal</string>
-    <string name="show_clear_button">Tampilkan tombol hapus</string>
-    <string name="clear_button_desc">Anda tetap dapat menekan lama tombol hapus untuk membersihkan kolom input.</string>
 
     <string name="back">Kembali</string>
     <string name="sort">Urutkan</string>

@@ -21,8 +21,6 @@
     <string name="ascending">Ascendant</string>
     <string name="descending">Descendant</string>
     <string name="decimal_formatting">Format décimal</string>
-    <string name="show_clear_button">Afficher le bouton « Effacer »</string>
-    <string name="clear_button_desc">Vous pouvez toujours appuyer longuement sur la touche « Retour Arrière » pour effacer le champ de saisie.</string>
     <string name="back">Retour</string>
     <string name="sort">Trier</string>
     <string name="delete">Supprimer</string>

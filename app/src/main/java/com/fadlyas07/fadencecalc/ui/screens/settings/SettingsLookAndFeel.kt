@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.fadlyas07.fadencecalc.R
 import com.fadlyas07.fadencecalc.data.datastore.rememberAppTheme
 import com.fadlyas07.fadencecalc.data.datastore.rememberColoredOperators
-import com.fadlyas07.fadencecalc.data.datastore.rememberShowClearButton
 import com.fadlyas07.fadencecalc.data.datastore.rememberSwapZeroAndDecimal
 import com.fadlyas07.fadencecalc.data.datastore.rememberUseButtonsAnimation
 import com.fadlyas07.fadencecalc.data.datastore.rememberUseSystemFont
@@ -52,8 +51,7 @@ fun SettingsLookAndFeel() {
     var useSystemFont by rememberUseSystemFont()
     var useButtonsAnimation by rememberUseButtonsAnimation()
     var useHapticFeedback by rememberVibration()
-    var showClearButton by rememberShowClearButton()
-    var coloredOperators by rememberColoredOperators()
+var coloredOperators by rememberColoredOperators()
     var swapZeroAndDecimal by rememberSwapZeroAndDecimal()
     val themeItems = listOf(
         ThemeItem(
@@ -195,14 +193,6 @@ fun SettingsLookAndFeel() {
                 topDp = 4.dp,
                 bottomDp = 4.dp,
                 text = R.string.haptic_feedback
-            )
-            SettingsSwitch(
-                checked = showClearButton,
-                onCheckedChange = { showClearButton = !showClearButton },
-                topDp = 4.dp,
-                bottomDp = 24.dp,
-                text = R.string.show_clear_button,
-                optionalDescription = R.string.clear_button_desc
             )
         }
     }

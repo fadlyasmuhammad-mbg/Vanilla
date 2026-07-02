@@ -29,8 +29,6 @@
     <string name="show_back_button">Näita tagasi-nuppu</string>
     <string name="cancel">Katkesta</string>
     <string name="support">Kasutajatugi</string>
-    <string name="show_clear_button">Näita tühjenda-nuppu</string>
-    <string name="clear_button_desc">Sellele vaatamata võid tagasisammuklahvi pika vajutusega kustutada sisestusvälja sisu.</string>
     <string name="back">Tagasi</string>
     <string name="backspace">Tagasisammuklahv (Backspace)</string>
     <string name="put_field">Pane tagasi sisendiväljale</string>

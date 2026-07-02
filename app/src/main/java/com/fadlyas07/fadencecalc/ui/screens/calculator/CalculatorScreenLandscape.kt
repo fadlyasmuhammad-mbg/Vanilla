@@ -31,7 +31,6 @@ import com.fadlyas07.fadencecalc.data.actions.CalcAction
 import com.fadlyas07.fadencecalc.data.calculator.Tokens
 import com.fadlyas07.fadencecalc.data.datastore.rememberHistoryMaxItems
 import com.fadlyas07.fadencecalc.data.datastore.rememberSaveErrorsToHistory
-import com.fadlyas07.fadencecalc.data.datastore.rememberShowClearButton
 import com.fadlyas07.fadencecalc.data.datastore.rememberUseHistory
 import com.fadlyas07.fadencecalc.domain.repository.HistoryEvents
 import com.fadlyas07.fadencecalc.ui.navigation.Screens
@@ -54,7 +53,7 @@ fun CalculatorScreenLandscape(
     onNavigate: (Screens) -> Unit,
     onGotoHistory: () -> Unit
 ) {
-    val showClearButton by rememberShowClearButton()
+    val showClearButton = true
     val localeDecimalChar =
         remember { DecimalFormatSymbols.getInstance().decimalSeparator.toString() }
     val saveErrorsToHistory by rememberSaveErrorsToHistory()
