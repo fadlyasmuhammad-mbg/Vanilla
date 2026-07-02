@@ -1,39 +1,37 @@
-@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
-
 package com.fadlyas07.fadencecalc.ui.screens.history
 
 import android.content.ClipData
-import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuGroup
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.DropdownMenuPopup
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,9 +47,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEachIndexed
 import com.fadlyas07.fadencecalc.R
 import com.fadlyas07.fadencecalc.data.datastore.rememberColoredOperators
 import com.fadlyas07.fadencecalc.data.datastore.rememberDecimal
@@ -60,14 +56,13 @@ import com.fadlyas07.fadencecalc.data.datastore.rememberUseHistory
 import com.fadlyas07.fadencecalc.domain.model.Calculation
 import com.fadlyas07.fadencecalc.domain.repository.HistoryEvents
 import com.fadlyas07.fadencecalc.ui.screens.history.components.DeletionConfirmationDialog
-import com.fadlyas07.fadencecalc.ui.screens.history.components.HistoryActionButtons
-import com.fadlyas07.fadencecalc.ui.shared_components.AnimatedFab
 import com.fadlyas07.fadencecalc.utils.formatExpression
 import com.fadlyas07.fadencecalc.utils.formatNumber
 import com.fadlyas07.fadencecalc.utils.isErrorMessage
 import com.fadlyas07.fadencecalc.utils.isOperator
 import com.fadlyas07.fadencecalc.utils.sort
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
     calculations: List<Calculation>,
@@ -75,246 +70,484 @@ fun HistoryScreen(
     onPutBackToField: (String) -> Unit,
     onGotoMain: () -> Unit
 ) {
-    val lazyState = rememberLazyListState()
-    var isHistoryEnable by rememberUseHistory()
+    var isHistoryEnabled by rememberUseHistory()
     val newestFirst by rememberHistoryNewestFirst()
-    var showDeleteConfirmation by remember { mutableStateOf(false) }
+
+    var showDeleteConfirmation by remember {
+        mutableStateOf(false)
+    }
+
+    val sortedCalculations = remember(
+        calculations,
+        newestFirst
+    ) {
+        calculations.sort(newestFirst)
+    }
 
     if (showDeleteConfirmation) {
         DeletionConfirmationDialog(
-            onDismissRequest = { showDeleteConfirmation = false },
-            onDelete = { onEvents(HistoryEvents.DeleteAllCalculation) }
+            onDismissRequest = {
+                showDeleteConfirmation = false
+            },
+            onDelete = {
+                showDeleteConfirmation = false
+                onEvents(HistoryEvents.DeleteAllCalculation)
+            }
         )
     }
 
     Scaffold(
-        bottomBar = {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 15.dp)
-                    .fillMaxWidth()
-                    .navigationBarsPadding(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                AnimatedFab(
-                    onClick = onGotoMain,
-                    icon = R.drawable.arrow_up,
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                )
-                HistoryActionButtons { showDeleteConfirmation = true }
-            }
-        }
-    ) { pv ->
-        if (!isHistoryEnable) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(stringResource(R.string.history_not_enabled))
-                Spacer(Modifier.height(10.dp))
-                Button(
-                    onClick = { isHistoryEnable = !isHistoryEnable },
-                    shapes = ButtonDefaults.shapes()
-                ) {
-                    Text(stringResource(R.string.enable_history))
+        topBar = {
+            HistoryTopBar(
+                historyCount = sortedCalculations.size,
+                canClear = isHistoryEnabled &&
+                    sortedCalculations.isNotEmpty(),
+                onBack = onGotoMain,
+                onClearAll = {
+                    showDeleteConfirmation = true
                 }
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = pv,
-                state = lazyState
-            ) {
-
-                if (calculations.isEmpty()) {
-                    item {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.history_rounded),
-                                contentDescription = null,
-                                modifier = Modifier.size(70.dp)
-                            )
-                            Spacer(Modifier.height(10.dp))
-                            Text(
-                                text = stringResource(R.string.no_calc_found),
-                                style = MaterialTheme.typography.headlineMediumEmphasized,
-                                fontWeight = FontWeight.Black
-                            )
-                            Text(
-                                text = stringResource(R.string.calc_empty),
-                                style = MaterialTheme.typography.bodyMediumEmphasized,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+            )
+        }
+    ) { paddingValues ->
+        when {
+            !isHistoryEnabled -> {
+                HistoryDisabledState(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .navigationBarsPadding(),
+                    onEnableHistory = {
+                        isHistoryEnabled = true
                     }
-                } else {
-                    itemsIndexed(
-                        items = calculations.sort(newestFirst),
-                        key = { _, item -> item.id }
-                    ) { index, item ->
-                        CalculationItem(
-                            calculation = item,
-                            onEvents = onEvents,
-                            onPutBackToField = onPutBackToField,
-                            topDp = if (index == 0) 24.dp else 4.dp,
-                            bottomDp = if (index == calculations.lastIndex) 24.dp else 4.dp,
-                            modifier = Modifier.animateItem()
+                )
+            }
+
+            sortedCalculations.isEmpty() -> {
+                EmptyHistoryState(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .navigationBarsPadding(),
+                    onGoBack = onGotoMain
+                )
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 12.dp,
+                        bottom =
+                            paddingValues.calculateBottomPadding() +
+                            24.dp
+                    ),
+                    verticalArrangement =
+                        Arrangement.spacedBy(12.dp)
+                ) {
+                    items(
+                        items = sortedCalculations,
+                        key = { item -> item.id }
+                    ) { calculation ->
+                        HistoryCalculationCard(
+                            calculation = calculation,
+                            onPutBackToField =
+                                onPutBackToField,
+                            onDelete = {
+                                onEvents(
+                                    HistoryEvents
+                                        .DeleteCalculation(
+                                            calculation
+                                        )
+                                )
+                            }
                         )
                     }
                 }
-
             }
         }
     }
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HistoryTopBar(
+    historyCount: Int,
+    canClear: Boolean,
+    onBack: () -> Unit,
+    onClearAll: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = "History",
+                    style = MaterialTheme
+                        .typography
+                        .headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            navigationIcon = {
+                TextButton(
+                    onClick = onBack
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            R.drawable.arrow_up
+                        ),
+                        contentDescription = "Back"
+                    )
+
+                    Spacer(
+                        modifier = Modifier.width(6.dp)
+                    )
+
+                    Text("Back")
+                }
+            },
+            actions = {
+                if (canClear) {
+                    IconButton(
+                        onClick = onClearAll
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                R.drawable.delete
+                            ),
+                            contentDescription =
+                                "Clear history",
+                            tint =
+                                MaterialTheme
+                                    .colorScheme
+                                    .error
+                        )
+                    }
+                }
+            },
+            colors = TopAppBarDefaults
+                .topAppBarColors(
+                    containerColor = Color.Transparent
+                )
+        )
+
+        if (historyCount > 0) {
+            Text(
+                text = "$historyCount item" +
+                    if (historyCount == 1) "" else "s",
+                modifier = Modifier
+                    .padding(
+                        horizontal = 20.dp
+                    ),
+                style =
+                    MaterialTheme
+                        .typography
+                        .bodyMedium,
+                color =
+                    MaterialTheme
+                        .colorScheme
+                        .onSurfaceVariant
+            )
+        }
+    }
 }
 
 @Composable
-private fun CalculationItem(
-    calculation: Calculation,
-    onEvents: (HistoryEvents) -> Unit,
-    onPutBackToField: (String) -> Unit,
-    topDp: Dp,
-    bottomDp: Dp,
-    modifier: Modifier = Modifier
+private fun HistoryDisabledState(
+    modifier: Modifier = Modifier,
+    onEnableHistory: () -> Unit
 ) {
-    val clipboardManager = LocalClipboard.current
-    val localContentColor = LocalContentColor.current
-    val shouldFormat by rememberDecimal()
-    val coloredOperators by rememberColoredOperators()
-    var actionsExpanded by remember { mutableStateOf(false) }
-    val actions = listOf(
-        HistoryAction(
-            onClick = { onPutBackToField(calculation.operation) },
-            icon = R.drawable.undo,
-            text = R.string.put_field
-        ),
-        HistoryAction(
-            onClick = {
-                clipboardManager.nativeClipboard.setPrimaryClip(
-                    ClipData.newPlainText(
-                        "",
-                        "${calculation.operation} = ${calculation.result}"
-                    )
-                )
-            },
-            icon = R.drawable.copy,
-            text = R.string.copy
-        ),
-        HistoryAction(
-            onClick = { onEvents(HistoryEvents.DeleteCalculation(calculation)) },
-            icon = R.drawable.delete,
-            text = R.string.delete,
-            tint = MaterialTheme.colorScheme.error
-        )
-    )
-
-
-    Card(
-        onClick = { onPutBackToField(calculation.operation) },
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        ),
-        shape = RoundedCornerShape(
-            topStart = topDp,
-            topEnd = topDp,
-            bottomEnd = bottomDp,
-            bottomStart = bottomDp
-        )
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
     ) {
-        Row(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(20.dp),
+            shape = RoundedCornerShape(28.dp),
+            colors = CardDefaults.cardColors(
+                containerColor =
+                    MaterialTheme
+                        .colorScheme
+                        .surfaceContainerLow
+            )
         ) {
             Column(
                 modifier = Modifier
-                    .weight(1f),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = buildAnnotatedString {
-                        calculation.operation.formatExpression(shouldFormat).forEach { char ->
-                            if (coloredOperators && char.isOperator()) {
-                                withStyle(SpanStyle(MaterialTheme.colorScheme.primary)) {
-                                    append(char)
-                                }
-                            } else append(char)
-                        }
-                    },
-                    style = MaterialTheme.typography.titleLargeEmphasized,
-                    modifier = Modifier.basicMarquee()
-                )
-                Text(
-                    text = calculation.result.formatNumber(shouldFormat),
-                    style = MaterialTheme.typography.titleLargeEmphasized.copy(
-                        color = if (calculation.result.isErrorMessage()) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.tertiary
-                    ),
-                    modifier = Modifier.basicMarquee()
-                )
-            }
-            IconButton(
-                onClick = { actionsExpanded = true },
-                shapes = IconButtonDefaults.shapes()
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment =
+                    Alignment.CenterHorizontally,
+                verticalArrangement =
+                    Arrangement.spacedBy(12.dp)
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.more_vert),
-                    contentDescription = stringResource(R.string.more_actions)
+                    painter = painterResource(
+                        R.drawable.history_rounded
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier.size(56.dp)
                 )
 
-                DropdownMenuPopup(
-                    expanded = actionsExpanded,
-                    onDismissRequest = { actionsExpanded = false }
+                Text(
+                    text = stringResource(
+                        R.string.history_not_enabled
+                    ),
+                    style = MaterialTheme
+                        .typography
+                        .headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Text(
+                    text =
+                        "Turn history on to save your recent calculations.",
+                    style = MaterialTheme
+                        .typography
+                        .bodyMedium,
+                    color = MaterialTheme
+                        .colorScheme
+                        .onSurfaceVariant
+                )
+
+                Button(
+                    onClick = onEnableHistory
                 ) {
-                    DropdownMenuGroup(
-                        shapes = MenuDefaults.groupShapes()
-                    ) {
-                        actions.fastForEachIndexed { index, action ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    action.onClick()
-                                    actionsExpanded = false
-                                },
-                                text = {
-                                    Text(
-                                        text = stringResource(action.text),
-                                        color = action.tint ?: localContentColor
-                                    )
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        painter = painterResource(action.icon),
-                                        contentDescription = null,
-                                        tint = action.tint ?: localContentColor
-                                    )
-                                },
-                                shape = when (index) {
-                                    0 -> MenuDefaults.leadingItemShape
-                                    actions.lastIndex -> MenuDefaults.trailingItemShape
-                                    else -> MenuDefaults.middleItemShape
-                                }
-                            )
-                        }
-                    }
+                    Text(
+                        stringResource(
+                            R.string.enable_history
+                        )
+                    )
                 }
             }
         }
     }
 }
 
-private data class HistoryAction(
-    val onClick: () -> Unit,
-    val icon: Int,
-    val text: Int,
-    val tint: Color? = null
-)
+@Composable
+private fun EmptyHistoryState(
+    modifier: Modifier = Modifier,
+    onGoBack: () -> Unit
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment =
+                Alignment.CenterHorizontally,
+            verticalArrangement =
+                Arrangement.spacedBy(12.dp)
+        ) {
+            Icon(
+                painter = painterResource(
+                    R.drawable.history_rounded
+                ),
+                contentDescription = null,
+                modifier = Modifier.size(72.dp)
+            )
+
+            Text(
+                text = "No history yet",
+                style = MaterialTheme
+                    .typography
+                    .headlineMedium,
+                fontWeight = FontWeight.Black
+            )
+
+            Text(
+                text =
+                    "Your recent calculations will appear here.",
+                style = MaterialTheme
+                    .typography
+                    .bodyLarge,
+                color =
+                    MaterialTheme
+                        .colorScheme
+                        .onSurfaceVariant
+            )
+
+            Button(
+                onClick = onGoBack
+            ) {
+                Text("Go to calculator")
+            }
+        }
+    }
+}
+
+@Composable
+private fun HistoryCalculationCard(
+    calculation: Calculation,
+    onPutBackToField: (String) -> Unit,
+    onDelete: () -> Unit
+) {
+    val clipboardManager = LocalClipboard.current
+    val shouldFormat by rememberDecimal()
+    val coloredOperators by rememberColoredOperators()
+
+    Card(
+        onClick = {
+            onPutBackToField(calculation.operation)
+        },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(
+            containerColor =
+                MaterialTheme
+                    .colorScheme
+                    .surfaceContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(18.dp),
+            verticalArrangement =
+                Arrangement.spacedBy(14.dp)
+        ) {
+            Text(
+                text = buildAnnotatedString {
+                    calculation.operation
+                        .formatExpression(
+                            shouldFormat
+                        )
+                        .forEach { char ->
+                            if (
+                                coloredOperators &&
+                                char.isOperator()
+                            ) {
+                                withStyle(
+                                    SpanStyle(
+                                        color =
+                                            MaterialTheme
+                                                .colorScheme
+                                                .primary
+                                    )
+                                ) {
+                                    append(char)
+                                }
+                            } else {
+                                append(char)
+                            }
+                        }
+                },
+                style = MaterialTheme
+                    .typography
+                    .titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = calculation.result
+                    .formatNumber(shouldFormat),
+                style = MaterialTheme
+                    .typography
+                    .headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+                color =
+                    if (
+                        calculation.result
+                            .isErrorMessage()
+                    ) {
+                        MaterialTheme
+                            .colorScheme
+                            .error
+                    } else {
+                        MaterialTheme
+                            .colorScheme
+                            .primary
+                    }
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(
+                        rememberScrollState()
+                    ),
+                horizontalArrangement =
+                    Arrangement.spacedBy(8.dp)
+            ) {
+                HistoryActionChip(
+                    label = stringResource(
+                        R.string.put_field
+                    ),
+                    icon = R.drawable.undo,
+                    onClick = {
+                        onPutBackToField(
+                            calculation.operation
+                        )
+                    }
+                )
+
+                HistoryActionChip(
+                    label = stringResource(
+                        R.string.copy
+                    ),
+                    icon = R.drawable.copy,
+                    onClick = {
+                        clipboardManager
+                            .nativeClipboard
+                            .setPrimaryClip(
+                                ClipData.newPlainText(
+                                    "",
+                                    "${calculation.operation} = " +
+                                        calculation.result
+                                )
+                            )
+                    }
+                )
+
+                HistoryActionChip(
+                    label = stringResource(
+                        R.string.delete
+                    ),
+                    icon = R.drawable.delete,
+                    onClick = onDelete,
+                    isDestructive = true
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HistoryActionChip(
+    label: String,
+    icon: Int,
+    onClick: () -> Unit,
+    isDestructive: Boolean = false
+) {
+    val contentColor =
+        if (isDestructive) {
+            MaterialTheme.colorScheme.error
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
+
+    AssistChip(
+        onClick = onClick,
+        label = {
+            Text(
+                text = label,
+                color = contentColor
+            )
+        },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null,
+                tint = contentColor
+            )
+        }
+    )
+}
